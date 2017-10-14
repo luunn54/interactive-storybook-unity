@@ -26,13 +26,15 @@ public class GameController : MonoBehaviour {
     public Button portraitNextButton;
     public Button portraitBackButton;
 
-    public Button startReadButton; // Reference always the same.
-    public GameObject landscapePanel; // Reference always the same.
-    public GameObject portraitPanel; // Reference always the same.
+    public Button startReadButton;
+    public GameObject landscapePanel;
+    public GameObject portraitPanel;
 
     // Objects for ROS connection.
     public Button connectButton;
     private RosManager ros;
+
+    // Reference to SceneManager so we can load and manipulate story scenes.
     private SceneManager sceneManager;
 
     void Awake()
@@ -68,7 +70,6 @@ public class GameController : MonoBehaviour {
 
         this.sceneManager = GetComponent<SceneManager>();
         this.sceneManager.HelloWorld();
-        this.sceneManager.LoadImage();
 
     }
 
@@ -121,7 +122,12 @@ public class GameController : MonoBehaviour {
     {
 
         Debug.Log("Next Button clicked.");
-        this.switchToPortraitMode();
+		SceneDescription d = new SceneDescription()
+		{
+			storyImageFile = "the_hungry_toad_01"
+		};
+		this.sceneManager.LoadScene(d);
+        //this.switchToPortraitMode();
 
 	}
 

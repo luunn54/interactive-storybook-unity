@@ -1,0 +1,27 @@
+Calling one, Calling all! Come see what's here at Dinosaur Hall. <q(i) What do you think is in Dinosaur Hall? /q><h It's called Dinosaur hall. What might be there? /h><a dinosaurs /a> 
+
+Dinosaurs big and dinosaurs small. Dinosaurs, dinosaurs! We have them all! 
+
+Dinosaur maps are here for us all, to show us the way around Dinosaur Hall. 
+
+Dinosaurs long and dinosaurs tall, they are all here at Dinosaur Hall. 
+
+Dinosaurs with plates and dinosaurs with sails. Dinosaurs with spikes up and down their tails. 
+
+Dinosaurs with horns, one, two, three! Is this the dinosaur you came to see? 
+
+Dinosaurs little, dinosaurs so small. Does this one look like a dinosaur at all? <q(f) How big are these dinosaurs? /q><h Look at the picture. There are some dinosaurs. How big are they? /h><a small; little; tiny /a>
+
+Dinosaurs with bills, dinosaurs with crests. So many dinosaurs! Come see the rest. 
+
+Dinosaurs eating plants, dinosaurs eating meat. It's a dinosaur show! Come get a seat. 
+
+Dinosaur bones can tell us more about the dinosaurs that lived here before. 
+
+Dinosaur teeth and dinosaur jaws. Dinosaur feet and dinosaur claws. 
+
+A dinosaur baby so cute in its nest. Look at that big one! It must be T-Rex! 
+
+Today there are no dinosaurs at all, but you can still see them at Dinosaur Hall. 
+
+Can you name these dinosaurs? <q(i) Have you ever seen a dinosaur? /q><h Have you seen a dinosaur in a museum or in a book? /h><a yes; no /a>

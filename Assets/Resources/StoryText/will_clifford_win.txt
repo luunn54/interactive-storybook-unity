@@ -1,0 +1,15 @@
+The dogs will race. Who will win? <q(f) How many dogs are racing? /q> <h Count the dogs that are on the start line. /h><a five;5 /a>
+
+Clifford is big. Clifford is fast. Clifford will win! 
+
+Mac is small. Mac is fast. Mac will win! <q(i) Who do you think will win? /q> <h Clifford or Mac? /h><a clifford;mac /a>
+
+Mac ran up the hill. Up, up, up! Clifford ran up the hill. Up, up, up! All the dogs ran up, up, up! 
+
+Mac ran down the hill. Down, down, down! Clifford ran down the hill. Down, down, down! All the dogs ran down, down, down! 
+
+Mac ran fast. Clifford ran fast. 
+
+Clifford did it! 
+
+Clifford is the top dog! 

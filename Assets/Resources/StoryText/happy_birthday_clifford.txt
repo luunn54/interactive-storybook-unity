@@ -1,0 +1,13 @@
+Clifford is at the window. 
+
+Where is Emily Elizabeth? <q(f) What is Emily Elizabeth holding? /q><h Look at the picture. What is in Emily Elizabeth’s hands? /h><a balloons;balloon /a> 
+
+Clifford is at the dock. 
+
+Where is Cleo? 
+
+Clifford is at the park. <q(f) Where is Clifford? /q><h Look at the picture. Do you see where Clifford is? /h><a park /a> 
+
+Where is T-Bone? 
+
+Happy Birthday, Clifford!

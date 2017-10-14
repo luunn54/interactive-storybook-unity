@@ -1,0 +1,15 @@
+I bat the ball. See it go! 
+
+T-Bone has it. Good catch! 
+
+Mom bats the ball. See it go! <q(f) Who batted the ball? /q><h Someone batted the ball. Who was it? /h><a Mom /a>
+
+Mac has it. Good catch! 
+
+Dad bats the ball. See it go! 
+
+See the ball go, go, go! <q(i) Where will the ball go? /q><h It's going very far and high! Where will it land? /h><a on clifford; far away; in a tree; outside the yard /a>
+
+Clifford stops the ball. 
+
+Cleo has it! What fun!

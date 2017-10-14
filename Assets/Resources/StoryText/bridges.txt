@@ -1,0 +1,23 @@
+Bridges. 
+
+This bridge is short. 
+
+This bridge is long. 
+
+This bridge is low. 
+
+This bridge is high. <q(f) What is on the bridge? /q><h Look at the picture. What is on the bridge? /h><a train /a> 
+
+This bridge is straight. 
+
+This bridge is curved. 
+
+This bridge is old. 
+
+This bridge is new. 
+
+This bridge is narrow. 
+
+This bridge is wide. 
+
+All bridges take you to the other side. <q(i) Have you ever been on a bridge? /q><h Maybe you drove over a bridge in a car or walked on one. What was it like? /h><a /a>

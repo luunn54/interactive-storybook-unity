@@ -5,6 +5,7 @@
 
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class SceneManager : MonoBehaviour {
 
@@ -16,6 +17,10 @@ public class SceneManager : MonoBehaviour {
 	public GameObject landscapeWideGraphicsPanel;
 	public GameObject landscapeWideTextPanel;
 
+    // Used for internal references.
+    private GameObject graphicsPanel;
+    private GameObject textPanel;
+
     private string displayMode = "landscape"; // TODO: use enum.
 
 	void Awake() {
@@ -24,7 +29,9 @@ public class SceneManager : MonoBehaviour {
 
     void Start() {
         Logger.Log("SceneManager start");
-        // Get all references as needed.
+
+        this.graphicsPanel = landscapeGraphicsPanel;
+        this.textPanel = landscapeTextPanel;
     }
 
     public void HelloWorld() {
@@ -37,22 +44,27 @@ public class SceneManager : MonoBehaviour {
     // place, and attaching callbacks to created GameObjects, where these
     // callbacks involve functions from SceneManipulatorAPI.
     public void LoadScene(SceneDescription description) {
-        Logger.Log(description);
+        Logger.Log(description.getStoryImageFile());
+        this.LoadImage(description.getStoryImageFile());
+
     }
 
-    public void LoadImage() {
+    private void LoadImage(string imageFile) {
+        string storyName = imageFile.Substring(0, imageFile.LastIndexOf("_"));
         GameObject newObj = new GameObject();
         newObj.AddComponent<RawImage>();
         newObj.AddComponent<AspectRatioFitter>();
-        newObj.transform.SetParent(landscapeGraphicsPanel.transform, false);
+        newObj.transform.SetParent(this.landscapeGraphicsPanel.transform, false);
         newObj.GetComponent<AspectRatioFitter>().aspectMode = AspectRatioFitter.AspectMode.FitInParent;
-        Texture2D texture = Resources.Load("StoryPages/the_hungry_toad/the_hungry_toad_01") as Texture2D;
+		string fullImagePath = "StoryPages/" + storyName + "/" + imageFile;
+		Texture2D texture = Resources.Load(fullImagePath) as Texture2D;
+        Logger.Log(fullImagePath);
         newObj.GetComponent<RawImage>().texture = texture;
         Logger.Log("finished loading resource");
     }
 
     // GameController can tell us to rotate mode.
-    public void setDisplayMode(string newMode) {
+    public void SetDisplayMode(string newMode) {
         this.displayMode = newMode;
     }
 

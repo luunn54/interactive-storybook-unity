@@ -1,0 +1,15 @@
+See Mom. See Dad. See the tot. The tot likes balloons a lot. 
+
+Up! Up! Up! See a lot of balloons go up. 
+
+Pop! Pop! Pop! The tot is sad. Dad pats the tot. <q(f) Why is the tot sad? /q> <h What happened to the ballons? /h> <a popped;pop;gone;destroy; /a>
+
+Stop! Stop! Stop! Clifford sees the balloons on top. Cleo sees the balloons on top. T-Bone sees the balloons on top. 
+
+Up! Up! Up! Cleo is on top. 
+
+Up! Up! Up! T-Bone is on top. T-Bone spots the balloons. 
+
+The tot pats Clifford. The tot pats Cleo. The tot pats T-Bone. <q(e) How does the tot feel? Can you show me with your face?/q> <h look at the tot's expression in the picture /h> <a positive; happy /a> 
+
+The tot likes the dogs a lot.

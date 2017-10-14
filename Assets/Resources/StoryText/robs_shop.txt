@@ -1,0 +1,25 @@
+Hi! I am Rob. This is my shop. I live on top. 
+
+I have lots of jobs to do. What are my jobs? I will tell you. 
+
+I get up at six each day. I go down to unlock my shop. Come in and look! 
+
+Would you like milk? Would you like ham? Would you like nuts or gum or jam? I could sell them all to you! <q(f) Which items does Rob sell? /q> <h Look at the picture, what do you see? /h> <a milk;nuts;ham;gum;jam /a>
+
+I fill my shop. I get out sacks and big bags. I stack cans on top of cans. I stock the racks with lots of things. 
+
+Then I check the shop. If there is a spill, I mop it up. I dust here and there. I brush things into my dustpan. 
+
+I am no slob! 
+
+People come into my shop. Then I rush, rush, rush! I make them buns with gobs of jam. I make big, thick subs. I make them ham and eggs. I make corn on the cob. 
+
+People like the things I make. 
+
+More and more people come in. They ask for things. They get this and that. I pack their bags. I stuff their packs. They hand me cash. <q(i) How do people feel about Rob? /q> <h A lot of people come into his shop and buy his items /h> <a positive;like;happy /a> 
+
+I say, "Thanks." They say, "Good-bye." 
+
+At six I stop. I look at my shop. Have I done all my jobs? Is there more I could do? 
+
+I look at my list. Yes, there is more than this. There is one more job. Shut the shop and go up top!

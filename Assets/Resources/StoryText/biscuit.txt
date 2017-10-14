@@ -1,0 +1,21 @@
+This is Biscuit. Biscuit is small. Biscuit is yellow. 
+
+Time for bed, Biscuit! Woof, woof! Biscuit wants to play. <q(f) Does biscuit want to go to bed? /q><h Look at biscuit. Does he look sleepy? /h><a no /a> 
+
+Time for bed, Biscuit! Woof, woof! Biscuit wants a snack. Time for bed, Biscuit! Woof, woof! Biscuit wants a drink. 
+
+Time for bed, Biscuit! Woof, woof! Biscuit wants to hear a story. 
+
+Time for bed, Biscuit! Woof, woof! Biscuit wants his blanket. Time for bed, Biscuit! Woof, woof! Biscuit wants his doll. 
+
+Time for bed, Biscuit! Woof, woof! Biscuit wants a hug. Time for bed, Biscuit! Woof, woof! Biscuit wants a kiss. <q(e) How does biscuit feel now? /q><h Look at biscuit's face. How does biscuit feel? /h><a positive /a> 
+
+Time for bed, Biscuit! Woof, woof! Biscuit wants a light on. 
+
+Woof! Biscuit wants to be tucked in. 
+
+Woof! Biscuit wants one more kiss. Woof! Biscuit wants one more hug. 
+
+Woof! Biscuit wants to curl up. 
+
+Sleepy puppy. Good night, Biscuit.

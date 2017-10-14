@@ -1,0 +1,13 @@
+Buildings are many shapes. 
+
+Buildings are triangles. <q(f) What shape is this building? /q><h Look at the picture. What shape is it? /h><a triangle /a> 
+
+Buildings are squares. 
+
+Buildings are circles. 
+
+Buildings are rectangles. 
+
+Buildings are triangles, squares, circles, and rectangles. 
+
+A building can even be a pentagon! <q(l) What is a pentagon? /q><h Look at the shape in the picture. What makes it a pentagon? /h><a Pentagon is a shape with five sides. /a>

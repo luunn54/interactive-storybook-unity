@@ -1,0 +1,39 @@
+Some butter. Some sugar. Some eggs. Some flour. Some chocolate chips. <q(f) What do you need to bake a cookie? /q> <h Look at the picture. What do you see? /h> <a butter; sugar;eggs;flour /a> 
+
+What time is it, Cookie Monster? 
+
+Time to make cookies! 
+
+Time to mix. 
+
+Time to roll. 
+
+Time to bake. 
+
+Dum-de-dum. Time to wait. 
+
+Time to think about the BIGGEST cookie in the world. 
+
+Some butter. 
+
+Some sugar. 
+
+Some eggs. 
+
+Some flour. 
+
+Some chocolate chips.
+
+Time to mix. 
+
+Time to roll. 
+
+Time to bake. 
+
+Cowabunga! Time to eat. 
+
+Oh, oh. Something is burning. <q(i) Why is something burning /q> <h Was cookie monster day dreaming too long? /h> <a bake;too long /a> 
+
+Time to start over.
+
+Some butter. Some sugar. Some eggs. Some flour. Some chocolate chips.
