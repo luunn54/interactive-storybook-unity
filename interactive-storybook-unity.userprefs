@@ -1,11 +1,11 @@
 ﻿<Properties StartupConfiguration="{BE773929-B95A-B392-E269-3DE0AFC1ECA5}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Util/Logger.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/GameMechanics/SceneManager.cs">
     <Files>
-      <File FileName="Assets/Scripts/GameMechanics/GameController.cs" Line="72" Column="58" />
+      <File FileName="Assets/Scripts/GameMechanics/GameController.cs" Line="71" Column="39" />
       <File FileName="Assets/Scripts/Ros/RosManager.cs" Line="7" Column="5" />
       <File FileName="Assets/Scripts/GameMechanics/SceneManipulatorAPI.cs" Line="17" Column="12" />
       <File FileName="Assets/Scripts/Util/Logger.cs" Line="9" Column="1" />
-      <File FileName="Assets/Scripts/GameMechanics/SceneManager.cs" Line="11" Column="48" NotebookId="1" />
+      <File FileName="Assets/Scripts/GameMechanics/SceneManager.cs" Line="47" Column="18" NotebookId="1" />
       <File FileName="Assets/Scripts/Util/Constants.cs" Line="9" Column="5" NotebookId="1" />
       <File FileName="Assets/Scripts/GameMechanics/SceneDescription.cs" Line="29" Column="33" NotebookId="1" />
     </Files>

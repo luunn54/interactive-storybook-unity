@@ -68,6 +68,7 @@ public class GameController : MonoBehaviour {
 
         this.sceneManager = GetComponent<SceneManager>();
         this.sceneManager.HelloWorld();
+        this.sceneManager.LoadImage();
 
     }
 

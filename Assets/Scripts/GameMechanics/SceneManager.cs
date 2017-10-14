@@ -40,6 +40,17 @@ public class SceneManager : MonoBehaviour {
         Logger.Log(description);
     }
 
+    public void LoadImage() {
+        GameObject newObj = new GameObject();
+        newObj.AddComponent<RawImage>();
+        newObj.AddComponent<AspectRatioFitter>();
+        newObj.transform.SetParent(landscapeGraphicsPanel.transform, false);
+        newObj.GetComponent<AspectRatioFitter>().aspectMode = AspectRatioFitter.AspectMode.FitInParent;
+        Texture2D texture = Resources.Load("StoryPages/the_hungry_toad/the_hungry_toad_01") as Texture2D;
+        newObj.GetComponent<RawImage>().texture = texture;
+        Logger.Log("finished loading resource");
+    }
+
     // GameController can tell us to rotate mode.
     public void setDisplayMode(string newMode) {
         this.displayMode = newMode;
