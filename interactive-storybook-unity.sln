@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio for Mac
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "interactive-storybook-unity.Plugins", "interactive-storybook-unity.Plugins.csproj", "{A6AC76CC-E655-3224-0130-B0FF0E958CF4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "interactive-storybook-unity", "interactive-storybook-unity.csproj", "{BE773929-B95A-B392-E269-3DE0AFC1ECA5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A6AC76CC-E655-3224-0130-B0FF0E958CF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6AC76CC-E655-3224-0130-B0FF0E958CF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6AC76CC-E655-3224-0130-B0FF0E958CF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6AC76CC-E655-3224-0130-B0FF0E958CF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE773929-B95A-B392-E269-3DE0AFC1ECA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE773929-B95A-B392-E269-3DE0AFC1ECA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE773929-B95A-B392-E269-3DE0AFC1ECA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE773929-B95A-B392-E269-3DE0AFC1ECA5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
