@@ -1,13 +1,13 @@
-// SceneManager loads a scene based on a SceneDescription, including loading
+// StoryManager loads a scene based on a SceneDescription, including loading
 // images, audio files, and drawing colliders and setting up callbacks to
-// handle trigger events. SceneManager uses SceneManipulationAPI for setting up
+// handle trigger events. StoryManager uses SceneManipulationAPI for setting up
 // these callbacks.
 
 using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class SceneManager : MonoBehaviour {
+public class StoryManager : MonoBehaviour {
 
 	public GameObject portraitGraphicsPanel;
     public GameObject portraitTextPanel;
@@ -24,11 +24,11 @@ public class SceneManager : MonoBehaviour {
     private string displayMode = "landscape"; // TODO: use enum.
 
 	void Awake() {
-        Logger.Log("SceneManager awake");
+        Logger.Log("StoryManager awake");
     }
 
     void Start() {
-        Logger.Log("SceneManager start");
+        Logger.Log("StoryManager start");
 
         this.graphicsPanel = landscapeGraphicsPanel;
         this.textPanel = landscapeTextPanel;
@@ -49,6 +49,8 @@ public class SceneManager : MonoBehaviour {
 
     }
 
+    // Argument imageFile should be something like "the_hungry_toad_01" and then
+    // this function will find it in the Resources directory and load it.
     private void LoadImage(string imageFile) {
         string storyName = imageFile.Substring(0, imageFile.LastIndexOf("_"));
         GameObject newObj = new GameObject();

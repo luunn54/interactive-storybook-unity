@@ -35,7 +35,7 @@ public class GameController : MonoBehaviour {
     private RosManager ros;
 
     // Reference to SceneManager so we can load and manipulate story scenes.
-    private SceneManager sceneManager;
+    private StoryManager storyManager;
 
     void Awake()
     {
@@ -68,8 +68,8 @@ public class GameController : MonoBehaviour {
         this.portraitBackButton.interactable = true;
         this.portraitBackButton.onClick.AddListener(onBackButtonClick);
 
-        this.sceneManager = GetComponent<SceneManager>();
-        this.sceneManager.HelloWorld();
+        this.storyManager = GetComponent<StoryManager>();
+        this.storyManager.HelloWorld();
 
     }
 
@@ -122,12 +122,10 @@ public class GameController : MonoBehaviour {
     {
 
         Debug.Log("Next Button clicked.");
-		SceneDescription d = new SceneDescription()
-		{
-			storyImageFile = "the_hungry_toad_01"
-		};
-		this.sceneManager.LoadScene(d);
-        //this.switchToPortraitMode();
+        SceneDescription d = new SceneDescription("the_hungry_toad_01.json");
+		this.storyManager.LoadScene(d);
+
+		//this.switchToPortraitMode();
 
 	}
 

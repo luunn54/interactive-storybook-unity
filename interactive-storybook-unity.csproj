@@ -118,8 +118,8 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\GameMechanics\GameController.cs" />
     <Compile Include="Assets\Scripts\GameMechanics\SceneDescription.cs" />
-    <Compile Include="Assets\Scripts\GameMechanics\SceneManager.cs" />
     <Compile Include="Assets\Scripts\GameMechanics\SceneManipulatorAPI.cs" />
+    <Compile Include="Assets\Scripts\GameMechanics\StoryManager.cs" />
     <Compile Include="Assets\Scripts\Ros\RosManager.cs" />
     <Compile Include="Assets\Scripts\Ros\RosbridgeUtilities.cs" />
     <Compile Include="Assets\Scripts\Ros\RosbridgeWebSocketClient.cs" />
