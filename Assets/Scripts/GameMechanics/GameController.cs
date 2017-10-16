@@ -86,9 +86,9 @@ public class GameController : MonoBehaviour {
             }
         }
         // TODO: Need to handle the progression of speech/animation here?
-        // Probably should do that, with timers that tell how long
-        // before switching over to the next word - how to do audio for that?
-        // Start simple, just play/pause audio, don't worry about highlighting.
+        // Yes, Cynthia said there's a tool that will get the timing for me,
+        // for highlighting. So just play audio and call highlighting.
+        // This should probably happen in StoryManager and not GameController.
     }
 
     void switchToLandscapeMode() {

@@ -1,15 +1,17 @@
 ﻿<Properties StartupConfiguration="{BE773929-B95A-B392-E269-3DE0AFC1ECA5}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/GameMechanics/SceneDescription.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/GameMechanics/StoryManager.cs">
     <Files>
-      <File FileName="Assets/Scripts/GameMechanics/GameController.cs" Line="114" Column="37" />
+      <File FileName="Assets/Scripts/GameMechanics/GameController.cs" Line="24" Column="39" />
       <File FileName="Assets/Scripts/Ros/RosManager.cs" Line="7" Column="5" />
-      <File FileName="Assets/Scripts/GameMechanics/SceneManipulatorAPI.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Ros/RosbridgeWebSocketClient.cs" Line="260" Column="36" />
+      <File FileName="Assets/Scripts/Ros/RosbridgeWebSocketClient.cs" Line="258" Column="21" />
       <File FileName="Assets/Scripts/Ros/RosbridgeUtilities.cs" Line="109" Column="56" />
+      <File FileName="Assets/Scripts/GameObjectBehaviours/SceneObjectManipulator.cs" Line="36" Column="1" />
+      <File FileName="Assets/Scripts/GameObjectBehaviours/ObjectAction.cs" Line="5" Column="28" />
       <File FileName="Assets/Scripts/Util/Constants.cs" Line="9" Column="1" NotebookId="1" />
-      <File FileName="Assets/Scripts/GameMechanics/SceneDescription.cs" Line="42" Column="33" NotebookId="1" />
-      <File FileName="Assets/Scripts/GameMechanics/StoryManager.cs" Line="48" Column="25" NotebookId="1" />
-      <File FileName="Assets/SceneDescriptions/the_hungry_toad/the_hungry_toad_01.json" Line="4" Column="28" NotebookId="1" />
+      <File FileName="Assets/Scripts/GameMechanics/SceneDescription.cs" Line="50" Column="15" NotebookId="1" />
+      <File FileName="Assets/Scripts/GameMechanics/StoryManager.cs" Line="65" Column="1" NotebookId="1" />
+      <File FileName="Assets/SceneDescriptions/the_hungry_toad/the_hungry_toad_01.json" Line="2" Column="3" NotebookId="1" />
+      <File FileName="Assets/Scripts/GameObjectBehaviours/SceneManipulatorAPI.cs" Line="20" Column="42" NotebookId="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

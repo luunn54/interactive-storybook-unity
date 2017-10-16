@@ -28,7 +28,6 @@ struct SceneObject {
 // can be stored easily as JSON files and can be sent over the network.
 [Serializable]
 public class SceneDescription {
-    // TODO: These should all be private when we deserialize them from JSON.
     public string displayMode; // Either "landscape" or "portrait".
     public string storyImageFile; // E.g. "the_hungry_toad_01".
     public string text; // All of the text. StoryManager will create TinkerText.
@@ -43,10 +42,12 @@ public class SceneDescription {
 
     // Populate this SceneDescription with JSON data.
     private void loadFromJSON(string jsonFile) {
-        string storyName = jsonFile.Substring(0, jsonFile.LastIndexOf("_"));
+        string storyName = jsonFile.Substring(0, jsonFile.LastIndexOf("_", StringComparison.CurrentCulture));
         string dataAsJson = File.ReadAllText("Assets/SceneDescriptions/" + storyName + "/" + jsonFile);
 		JsonUtility.FromJsonOverwrite(dataAsJson, this);
     }
+
+    // Getters
 
     public string getDisplayMode() {
         return this.displayMode;
