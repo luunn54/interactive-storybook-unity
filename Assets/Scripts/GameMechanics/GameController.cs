@@ -46,7 +46,7 @@ public class GameController : MonoBehaviour {
         }
         else if (instance != this)
         {
-            Logger.Log("destroy");
+            Logger.Log("duplicate GameController, destroying");
             Destroy(gameObject);
         }
         DontDestroyOnLoad(gameObject);
@@ -57,7 +57,7 @@ public class GameController : MonoBehaviour {
         // Start the ROS message watcher.
         // Set up all UI elements. (SetActive, GetComponent, etc.)
         // Get references to objects if necessary.
-
+        Logger.Log("Game Controller start");
         this.landscapeNextButton.interactable = true;
         this.landscapeNextButton.onClick.AddListener(onNextButtonClick);
         this.portraitNextButton.interactable = true;
@@ -118,7 +118,7 @@ public class GameController : MonoBehaviour {
     }
 
     // All UI handlers.
-    void onNextButtonClick()
+    public void onNextButtonClick()
     {
 
         Debug.Log("Next Button clicked.");

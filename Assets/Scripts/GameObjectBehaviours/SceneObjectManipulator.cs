@@ -26,11 +26,12 @@ public class SceneObjectManipulator : MonoBehaviour {
 
 
     // Call all OnMouseDown actions.
-    void OnMouseDown() {
+    public void OnMouseDown() {
         //foreach (ObjectAction action in this.onMouseDownHandlers) {
         //    action.func(gameObject, action.args);
         //}
         Logger.Log("OnMouseUpAsButton");
+        Logger.Log(gameObject.transform.localPosition);
         SceneManipulatorAPI.Highlight(gameObject, "red");
     }
 
