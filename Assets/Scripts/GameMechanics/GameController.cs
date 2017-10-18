@@ -99,9 +99,11 @@ public class GameController : MonoBehaviour {
 
         this.portraitPanel.GetComponent<CanvasGroup>().interactable = false;
         this.portraitPanel.GetComponent<CanvasGroup>().alpha = 0;
+        this.portraitPanel.SetActive(false);
 
 		this.landscapePanel.GetComponent<CanvasGroup>().interactable = true;
 		this.landscapePanel.GetComponent<CanvasGroup>().alpha = 1;
+        this.landscapePanel.SetActive(true);
 
         Screen.orientation = ScreenOrientation.Landscape;
     }
@@ -110,9 +112,11 @@ public class GameController : MonoBehaviour {
 
 		this.landscapePanel.GetComponent<CanvasGroup>().interactable = false;
 		this.landscapePanel.GetComponent<CanvasGroup>().alpha = 0;
+        this.landscapePanel.SetActive(false);
 
 		this.portraitPanel.GetComponent<CanvasGroup>().interactable = true;
 		this.portraitPanel.GetComponent<CanvasGroup>().alpha = 1;
+        this.portraitPanel.SetActive(true);
 
         Screen.orientation = ScreenOrientation.Portrait;
     }

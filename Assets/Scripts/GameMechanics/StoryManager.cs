@@ -21,19 +21,20 @@ public class StoryManager : MonoBehaviour {
     // Used for internal references.
     private GameObject graphicsPanel;
     private GameObject textPanel;
-    private GameObject currentStanza;
-
+    private GameObject currentStanza; // Stanza is just for disaply, we keep references to all TinkerText so it's not necessary to reference through a stanza.
 
     // Variables for loading TinkerTexts.
     private float MIN_TINKER_TEXT_WIDTH = 200; // Based on size of gifs.
     private float TEXT_HEIGHT = 100; // The actual text is smaller than whole TinkerText.
     private float remainingStanzaWidth = 0; // Width remaining in current stanza.
 
-    // Dynamically created GameObjects specific to this scene,
-    // each keyed by their human-given name.
+    // Dynamically created TinkerTexts specific to this scene.
+    private List<GameObject> tinkerTexts;
+
+    // Dynamically created SceneObjects, keyed by their human-given name.
     private Dictionary<string, GameObject> sceneObjects;
 
-    private string displayMode = "landscape"; // TODO: use enum.
+    private string displayMode = "landscape"; // TODO: use enum?
 
 	void Awake() {
         Logger.Log("StoryManager awake");
@@ -83,33 +84,27 @@ public class StoryManager : MonoBehaviour {
         newObj.transform.localPosition = Vector3.zero;
         newObj.GetComponent<AspectRatioFitter>().aspectMode = AspectRatioFitter.AspectMode.FitInParent;
 		string fullImagePath = "StoryPages/" + storyName + "/" + imageFile;
-        Logger.Log(fullImagePath);
         Sprite sprite = Resources.Load<Sprite>(fullImagePath);
         newObj.GetComponent<Image>().sprite = sprite;
         newObj.GetComponent<Image>().preserveAspect = true;
-        Logger.Log("finished loading resource");
     }
 
-    // Add a new TinkerText object to the textPanel.
+    // Add a new TinkerText ofor the given word.
     private void loadTinkerText(string word) {
         if (word.Length == 0) {
             return;
         }
-        Logger.Log("remaining stanza width: " + this.remainingStanzaWidth.ToString());
         Logger.Log("got word: " + word);
 		// Create a new stanza if we there's not enough stanza width left.
 		// Figure out how wide this word will be, first create the word.
 		GameObject newTinkerText = (GameObject)Instantiate((GameObject)Resources.Load("Prefabs/TinkerText"));
-        Logger.Log("  created new tinkertext");
         GameObject newText = newTinkerText.GetComponent<TinkerText>().text;
         newText.GetComponent<Text>().text = word;
         float preferredWidth = LayoutUtility.GetPreferredWidth(newText.GetComponent<RectTransform>());
-        Logger.Log("  preferred width is " + preferredWidth.ToString());
         preferredWidth = Math.Max(preferredWidth, this.MIN_TINKER_TEXT_WIDTH);
         newText.GetComponent<RectTransform>().sizeDelta = new Vector2(preferredWidth, this.TEXT_HEIGHT);
         if (preferredWidth > this.remainingStanzaWidth){
             // Add a new stanza.
-            Logger.Log("  added new stanza");
             GameObject newStanza = (GameObject)Instantiate((GameObject)Resources.Load("Prefabs/StanzaPanel"));
             newStanza.transform.SetParent(this.textPanel.transform, false);
             this.currentStanza = newStanza;
@@ -120,10 +115,8 @@ public class StoryManager : MonoBehaviour {
         // Set new TinkerText parent to be the stanza.
 		newTinkerText.GetComponent<TinkerText>().Init(preferredWidth);
 		newTinkerText.transform.SetParent(this.currentStanza.transform, false);
-        // Force the layout to dynamically change children.
-        // LayoutRebuilder.MarkLayoutForRebuild(this.currentStanza.transform as RectTransform);
-        // newTinkerText.GetComponent<RectTransform>().SetAsLastSibling();
         this.remainingStanzaWidth -= preferredWidth;
+        this.tinkerTexts.Add(newTinkerText);
     }
 
     private void loadBoundingBox() {

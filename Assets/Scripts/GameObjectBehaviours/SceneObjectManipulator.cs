@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
 
@@ -8,21 +9,24 @@ using System.Collections.Generic;
 // during the story interaction. StoryManager can call methods on the
 // ObjectManipulator to set click handlers, deal with paired objects. The
 // handlers will likely be functions from SceneManipulatorAPI.
-public class SceneObjectManipulator : MonoBehaviour {
+public class SceneObjectManipulator : MonoBehaviour
+{
 
     // TODO: in the future allow multiple paired objects using dictionary.
     private GameObject pairedObject;
     // private List<ObjectAction> onMouseDownHandlers;
 
 
-    void Start() {
+    void Start()
+    {
         Logger.Log("started manipulator");
         // this.onMouseDownHandlers = new List<Action<GameObject, object>>();
-	}
+    }
 
-	void Update() {
+    void Update()
+    {
         // Unneeded.
-	}
+    }
 
 
     // Call all OnMouseDown actions.
@@ -34,5 +38,6 @@ public class SceneObjectManipulator : MonoBehaviour {
         Logger.Log(gameObject.transform.localPosition);
         SceneManipulatorAPI.Highlight(gameObject, "red");
     }
+
 
 }

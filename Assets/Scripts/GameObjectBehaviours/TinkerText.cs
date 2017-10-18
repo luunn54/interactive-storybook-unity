@@ -1,5 +1,7 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
+using System;
 using System.Collections;
 
 
@@ -49,7 +51,26 @@ public class TinkerText : MonoBehaviour
         // Update size of Button.
         this.textButton.GetComponent<RectTransform>().sizeDelta = new Vector2(newWidth, this.BUTTON_TEXT_HEIGHT);
         Logger.Log("  updated size of button and tinkertext");
+        //UnityAction action = new UnityAction(this.HelloWorld()); ; 
+        //this.AddClickHandler(action);
+        this.textButton.GetComponent<Button>().onClick.AddListener(this.Testing);
     }
 
+    // UnityAction is conceptually just an array of functions to be called
+    // sequentially.
+    public void AddClickHandler(UnityAction unityAction) {
+        unityAction += new UnityAction(this.HelloWorld());
+        unityAction += this.Testing;
+        this.textButton.GetComponent<Button>().onClick.AddListener(unityAction);
+        //this.textButton.GetComponent<Button>().onClick.AddListener(this.Testing);
+    }
+
+    private Action HelloWorld() {
+        return () => { Logger.Log("hello world action"); };
+    }
+
+    public void Testing() {
+        Logger.Log("testing");
+    }
 
 }
