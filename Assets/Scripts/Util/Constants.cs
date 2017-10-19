@@ -5,6 +5,7 @@ public static class Constants {
     public static bool USE_ROS = true;
     public static string DEFAULT_ROSBRIDGE_IP = "192.168.1.149";
     public static string DEFAULT_ROSBRIDGE_PORT = "9090";
+
     // ROS topics.
 
 }

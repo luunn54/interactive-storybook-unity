@@ -37,6 +37,8 @@ public class StoryManager : MonoBehaviour {
     // The image we loaded for this scene.
     private GameObject storyImage;
 
+    private GameObject testObj;
+
     private string displayMode = "landscape"; // TODO: use enum?
 
 	void Awake() {
@@ -51,6 +53,16 @@ public class StoryManager : MonoBehaviour {
         this.tinkerTexts = new List<GameObject>();
         this.stanzas = new List<GameObject>();
         this.sceneObjects = new Dictionary<string, GameObject>();
+
+        this.testObj = new GameObject();
+        testObj.AddComponent<RectTransform>();
+        testObj.transform.SetParent(this.graphicsPanel.transform, false);
+        //testObj.GetComponent<RectTransform>().localPosition = Vector3.zero;
+        testObj.GetComponent<RectTransform>().sizeDelta = new Vector2(50, 50);
+        testObj.AddComponent<Image>();
+        testObj.GetComponent<Image>().color = Color.red;
+
+        this.testObj.AddComponent<SceneObjectManipulator>();
     }
 
     public void HelloWorld() {
@@ -96,7 +108,7 @@ public class StoryManager : MonoBehaviour {
         this.storyImage = newObj;
     }
 
-    // Add a new TinkerText ofor the given word.
+    // Add a new TinkerText for the given word.
     private void loadTinkerText(string word) {
         if (word.Length == 0) {
             return;
@@ -123,12 +135,14 @@ public class StoryManager : MonoBehaviour {
         // Set new TinkerText parent to be the stanza.
 		newTinkerText.GetComponent<TinkerText>().Init(preferredWidth);
 		newTinkerText.transform.SetParent(this.currentStanza.transform, false);
+        SceneObjectManipulator manip = testObj.GetComponent<SceneObjectManipulator>();
+        newTinkerText.GetComponent<TinkerText>().AddClickHandler(manip.Highlight("blue"));
         this.remainingStanzaWidth -= preferredWidth;
         this.tinkerTexts.Add(newTinkerText);
     }
 
     private void loadBoundingBox() {
-        // Create empty game object and try to position it correct.
+        // Create empty game object and try to position it correctly.
         GameObject testObject = new GameObject();
         testObject.transform.SetParent(this.graphicsPanel.transform, false);
         Logger.Log(testObject.transform.parent.gameObject.transform.name);
@@ -163,7 +177,8 @@ public class StoryManager : MonoBehaviour {
         this.storyImage = null;
     }
 
-    // GameController can tell us to rotate mode.
+    // Called by GameController to rotate display mode. We need to update our
+    // internal references to textPanel and graphicsPanel.
     public void SetDisplayMode(string newMode) {
         if (newMode != this.displayMode){
             this.displayMode = newMode;

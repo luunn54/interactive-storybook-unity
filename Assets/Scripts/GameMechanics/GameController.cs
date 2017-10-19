@@ -5,7 +5,10 @@
 // does not have to communicate over Ros, change behavior by setting the value
 // of Constants.USE_ROS.
 //
-// Game Controller is a singleton?
+// GameController controls the high level progression of the story, and tells
+// StoryManager which scenes to load.
+//
+// GameController is a singleton.
 
 using System;
 using System.Collections.Generic;

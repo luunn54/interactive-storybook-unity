@@ -15,11 +15,10 @@ public class SceneObjectManipulator : MonoBehaviour
     // TODO: in the future allow multiple paired objects using dictionary.
     private GameObject pairedObject;
     // private List<ObjectAction> onMouseDownHandlers;
+    private string TestString = "blah";
 
-
-    void Start()
-    {
-        Logger.Log("started manipulator");
+    void Start() {
+        Logger.Log("started scene object manipulator");
         // this.onMouseDownHandlers = new List<Action<GameObject, object>>();
     }
 
@@ -36,8 +35,29 @@ public class SceneObjectManipulator : MonoBehaviour
         //}
         Logger.Log("OnMouseUpAsButton");
         Logger.Log(gameObject.transform.localPosition);
-        SceneManipulatorAPI.Highlight(gameObject, "red");
+        //SceneManipulatorAPI.Highlight(gameObject, "red");
     }
 
+    public Action Highlight(string color) {
+        return () =>
+        {
+            gameObject.GetComponent<Image>().color = Color.blue;
+            gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 200);
+            gameObject.GetComponent<RectTransform>().anchorMin = new Vector2(0, 1);
+            gameObject.GetComponent<RectTransform>().anchorMax = new Vector2(0, 1);
+            gameObject.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
+            gameObject.GetComponent<RectTransform>().SetAsLastSibling();
+            Logger.Log(gameObject.GetComponent<RectTransform>().localPosition);
+            Logger.Log(gameObject.GetComponent<RectTransform>().anchoredPosition);
+            Logger.Log("Highlight: " + color + " " + this.TestString);
+        };
+    }
+
+    public Action MyTest(Action<object[]> action, params object[] args) {
+        return () =>
+        {
+            action(args);
+        };
+    }
 
 }

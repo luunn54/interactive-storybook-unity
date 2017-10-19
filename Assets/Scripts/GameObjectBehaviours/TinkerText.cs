@@ -23,54 +23,53 @@ public class TinkerText : MonoBehaviour
     public GameObject graphicPanel;
     private AnimationClip graphic;
 
+    // UnityActions for various UI interactions (e.g. clicking).
+    private UnityAction clickUnityAction;
+
     // These numbers should match the prefab, putting them here is just for
     // convenience when setting sizeDelta.
-	private float TINKER_TEXT_HEIGHT = 300; // Height of entire TinkerText, including graphic.
+    private float TINKER_TEXT_HEIGHT = 300; // Height of entire TinkerText, including graphic.
     private float BUTTON_TEXT_HEIGHT = 120; // Height of the button and text components.
 
-	// Necessary layout set up for all TinkerTexts.
-	void Start() {
-        Logger.Log("TinkerText start");
-	}
+    // Set up click handler.
+    // TODO: Consider using MouseDown and MouseUp instead of Click?
+    void Start() {
+        this.textButton.GetComponent<Button>().onClick.AddListener(this.clickUnityAction);
+    }
 
     // Shouldn't need this, should handle events through OnMouseDown and
     // OnMouseUp.
-	void Update() {
-			
-	}
+    void Update() {
+
+    }
 
     // StoryManager will call this to give TinkerText a chance to readjust the
     // width of all the text and the textButton and the overall TinkerText.
     // Also need to set the component to active. 
     // Don't need to know anything about its position, the layout groups
     // should automatically handle that.
-    public void Init(float newWidth) {
+    public void Init(float newWidth)
+    {
         gameObject.SetActive(true);
         // Update size of TinkerText.
-		GetComponent<RectTransform>().sizeDelta = new Vector2(newWidth, this.TINKER_TEXT_HEIGHT);
+        GetComponent<RectTransform>().sizeDelta = new Vector2(newWidth, this.TINKER_TEXT_HEIGHT);
         // Update size of Button.
         this.textButton.GetComponent<RectTransform>().sizeDelta = new Vector2(newWidth, this.BUTTON_TEXT_HEIGHT);
-        Logger.Log("  updated size of button and tinkertext");
-        //UnityAction action = new UnityAction(this.HelloWorld()); ; 
-        //this.AddClickHandler(action);
-        this.textButton.GetComponent<Button>().onClick.AddListener(this.Testing);
+
+        //    Action action = this.HelloWorld();
+        //    this.AddClickHandler(action);
     }
 
-    // UnityAction is conceptually just an array of functions to be called
-    // sequentially.
-    public void AddClickHandler(UnityAction unityAction) {
-        unityAction += new UnityAction(this.HelloWorld());
-        unityAction += this.Testing;
-        this.textButton.GetComponent<Button>().onClick.AddListener(unityAction);
-        //this.textButton.GetComponent<Button>().onClick.AddListener(this.Testing);
+    // Add a new action to the UnityAction click handler.
+    public void AddClickHandler(Action action)
+    {
+        this.clickUnityAction += new UnityAction(action);
     }
 
-    private Action HelloWorld() {
-        return () => { Logger.Log("hello world action"); };
-    }
-
-    public void Testing() {
-        Logger.Log("testing");
+    // Test using lambda expressions.
+    private Action HelloWorld()
+    {
+        return () => { Logger.Log("hello world action "); };
     }
 
 }
