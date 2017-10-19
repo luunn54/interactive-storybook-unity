@@ -137,6 +137,7 @@ public class GameController : MonoBehaviour {
     {
         Debug.Log("Back Button clicked.");
         this.switchToLandscapeMode();
+        this.storyManager.ClearScene();
     }
 
     void onStartRead()

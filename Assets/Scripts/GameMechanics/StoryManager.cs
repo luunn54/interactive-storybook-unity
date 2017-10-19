@@ -28,11 +28,14 @@ public class StoryManager : MonoBehaviour {
     private float TEXT_HEIGHT = 100; // The actual text is smaller than whole TinkerText.
     private float remainingStanzaWidth = 0; // Width remaining in current stanza.
 
+    // Dynamically created Stanzas.
+    private List<GameObject> stanzas;
     // Dynamically created TinkerTexts specific to this scene.
     private List<GameObject> tinkerTexts;
-
     // Dynamically created SceneObjects, keyed by their human-given name.
     private Dictionary<string, GameObject> sceneObjects;
+    // The image we loaded for this scene.
+    private GameObject storyImage;
 
     private string displayMode = "landscape"; // TODO: use enum?
 
@@ -45,6 +48,9 @@ public class StoryManager : MonoBehaviour {
 
         this.graphicsPanel = landscapeGraphicsPanel;
         this.textPanel = landscapeTextPanel;
+        this.tinkerTexts = new List<GameObject>();
+        this.stanzas = new List<GameObject>();
+        this.sceneObjects = new Dictionary<string, GameObject>();
     }
 
     public void HelloWorld() {
@@ -60,7 +66,7 @@ public class StoryManager : MonoBehaviour {
         Logger.Log(description.getStoryImageFile());
         this.loadImage(description.getStoryImageFile());
 
-        // Load all words as tinkertext.
+        // Load all words as TinkerText. Begin at beginning of a stanza.
         this.remainingStanzaWidth = 0;
         foreach (string word in description.getText().Split(' ')) {
             this.loadTinkerText(word);
@@ -87,6 +93,7 @@ public class StoryManager : MonoBehaviour {
         Sprite sprite = Resources.Load<Sprite>(fullImagePath);
         newObj.GetComponent<Image>().sprite = sprite;
         newObj.GetComponent<Image>().preserveAspect = true;
+        this.storyImage = newObj;
     }
 
     // Add a new TinkerText ofor the given word.
@@ -107,6 +114,7 @@ public class StoryManager : MonoBehaviour {
             // Add a new stanza.
             GameObject newStanza = (GameObject)Instantiate((GameObject)Resources.Load("Prefabs/StanzaPanel"));
             newStanza.transform.SetParent(this.textPanel.transform, false);
+            this.stanzas.Add(newStanza);
             this.currentStanza = newStanza;
             // Reset the remaining stanza width.
             this.remainingStanzaWidth = this.textPanel.GetComponent<RectTransform>().sizeDelta.x;
@@ -133,21 +141,49 @@ public class StoryManager : MonoBehaviour {
         testObject.AddComponent<SceneObjectManipulator>();
     }
 
+    // Called by GameController when we should remove all elements we've added
+    // to this page (usually in preparration for the creation of another page).
+    public void ClearScene() {
+        // Destroy stanzas.
+        foreach (GameObject stanza in this.stanzas) {
+            Destroy(stanza);
+        }
+        // Destroy TinkerText objects we have a reference to, and reset list.
+        foreach (GameObject tinkertext in this.tinkerTexts) {
+            Destroy(tinkertext);
+        }
+        this.tinkerTexts = new List<GameObject>();
+        // Destroy SceneObjects we have a reference to, and empty dictionary.
+        foreach (KeyValuePair<string,GameObject> obj in this.sceneObjects) {
+            Destroy(obj.Value);
+            this.sceneObjects.Remove(obj.Key);
+        }
+        // Remove all images.
+        Destroy(this.storyImage.gameObject);
+        this.storyImage = null;
+    }
+
     // GameController can tell us to rotate mode.
     public void SetDisplayMode(string newMode) {
         if (newMode != this.displayMode){
             this.displayMode = newMode;
-            if (this.displayMode == "landscape") {
-                this.graphicsPanel = this.landscapeGraphicsPanel;
-                this.textPanel = this.landscapeTextPanel;
-            } else if (this.displayMode == "landscapeWide") {
-                this.graphicsPanel = this.landscapeWideGraphicsPanel;
-                this.textPanel = this.landscapeWideTextPanel;
-            } else if (this.displayMode == "portrait") {
-                this.graphicsPanel = this.portraitGraphicsPanel;
-                this.textPanel = this.portraitTextPanel;
-            } else {
-                Logger.LogError("unknown display mode " + newMode);
+            switch (this.displayMode)
+            {
+                case "landscape":
+                    this.graphicsPanel = this.landscapeGraphicsPanel;
+                    this.textPanel = this.landscapeTextPanel;
+                    break;
+                case "landscapeWide":
+                    this.graphicsPanel = this.landscapeWideGraphicsPanel;
+                    this.textPanel = this.landscapeWideTextPanel;
+                    break;
+                case "portrait":
+                    this.graphicsPanel = this.portraitGraphicsPanel;
+                    this.textPanel = this.portraitTextPanel;
+                    break;
+                default:
+                    Logger.LogError("unknown display mode " + newMode);
+                    break;
             }
         }
     }
