@@ -49,8 +49,6 @@ public class StoryManager : MonoBehaviour {
     private float storyImageX;
     private float storyImageY;
 
-    private GameObject testObj;
-
     private DisplayMode displayMode;
 
 	void Awake() {
@@ -65,9 +63,10 @@ public class StoryManager : MonoBehaviour {
         this.stanzas = new List<GameObject>();
         this.sceneObjects = new Dictionary<string, GameObject>();
 
-        this.testObj = (GameObject)Instantiate((GameObject)Resources.Load("Prefabs/SceneObject"));
+        GameObject testObj = (GameObject)Instantiate((GameObject)Resources.Load("Prefabs/SceneObject"));
         testObj.transform.SetParent(this.graphicsPanel.transform, false);
-        this.testObj.GetComponent<RectTransform>().SetAsLastSibling();
+        testObj.GetComponent<RectTransform>().SetAsLastSibling();
+        this.sceneObjects["test"] = testObj;
     }
 
     // Main function to be called by GameController.
@@ -127,6 +126,7 @@ public class StoryManager : MonoBehaviour {
             this.storyImageY = 0;
             this.storyImageX = (this.graphicsPanelWidth - this.storyImageWidth) / 2;
         }
+        this.storyImage = newObj;
     }
 
     // Add a new TinkerText for the given word.
@@ -137,7 +137,7 @@ public class StoryManager : MonoBehaviour {
         Logger.Log("got word: " + word);
 		// Create a new stanza if we there's not enough stanza width left.
 		// Figure out how wide this word will be, first create the word.
-		GameObject newTinkerText = (GameObject)Instantiate((GameObject)Resources.Load("Prefabs/TinkerText"));
+		GameObject newTinkerText = Instantiate((GameObject)Resources.Load("Prefabs/TinkerText"));
         GameObject newText = newTinkerText.GetComponent<TinkerText>().text;
         newText.GetComponent<Text>().text = word;
         float preferredWidth = LayoutUtility.GetPreferredWidth(newText.GetComponent<RectTransform>());
@@ -145,7 +145,7 @@ public class StoryManager : MonoBehaviour {
         newText.GetComponent<RectTransform>().sizeDelta = new Vector2(preferredWidth, this.TEXT_HEIGHT);
         if (preferredWidth > this.remainingStanzaWidth){
             // Add a new stanza.
-            GameObject newStanza = (GameObject)Instantiate((GameObject)Resources.Load("Prefabs/StanzaPanel"));
+            GameObject newStanza = Instantiate((GameObject)Resources.Load("Prefabs/StanzaPanel"));
             newStanza.transform.SetParent(this.textPanel.transform, false);
             this.stanzas.Add(newStanza);
             this.currentStanza = newStanza;
@@ -157,9 +157,10 @@ public class StoryManager : MonoBehaviour {
         // TODO: set TinkerText id based on the info from JSON SceneDescription.
 		newTinkerText.GetComponent<TinkerText>().Init(1, preferredWidth);
 		newTinkerText.transform.SetParent(this.currentStanza.transform, false);
-        SceneObjectManipulator manip = testObj.GetComponent<SceneObjectManipulator>();
+        SceneObjectManipulator manip = this.sceneObjects["test"].GetComponent<SceneObjectManipulator>();
         newTinkerText.GetComponent<TinkerText>().AddClickHandler(manip.Highlight(Color.blue));
         newTinkerText.GetComponent<TinkerText>().AddClickHandler(manip.Move(new Vector3(this.storyImageX, this.storyImageY)));
+        newTinkerText.GetComponent<TinkerText>().AddClickHandler(manip.ChangeSize(new Vector2(200, 200)));
         this.remainingStanzaWidth -= preferredWidth;
         this.tinkerTexts.Add(newTinkerText);
     }
@@ -169,8 +170,6 @@ public class StoryManager : MonoBehaviour {
         GameObject testObject = new GameObject();
         testObject.transform.SetParent(this.graphicsPanel.transform, false);
         Logger.Log(testObject.transform.parent.gameObject.transform.name);
-        //testObject.AddComponent<RectTransform>();
-        //testObject.GetComponent<RectTransform>().sizeDelta = new Vector2(100, 100);
         testObject.AddComponent<BoxCollider2D>();
         testObject.GetComponent<BoxCollider2D>().enabled = true;
         testObject.transform.localPosition = Vector3.zero;
@@ -185,18 +184,17 @@ public class StoryManager : MonoBehaviour {
         foreach (GameObject stanza in this.stanzas) {
             Destroy(stanza);
         }
-        this.stanzas = new List<GameObject>();
+        this.stanzas.Clear();
         // Destroy TinkerText objects we have a reference to, and reset list.
         foreach (GameObject tinkertext in this.tinkerTexts) {
             Destroy(tinkertext);
         }
-        this.tinkerTexts = new List<GameObject>();
-        this.tinkerTexts = new List<GameObject>();
+        this.tinkerTexts.Clear();
         // Destroy SceneObjects we have a reference to, and empty dictionary.
         foreach (KeyValuePair<string,GameObject> obj in this.sceneObjects) {
             Destroy(obj.Value);
-            this.sceneObjects.Remove(obj.Key);
         }
+        this.sceneObjects.Clear();
         // Remove all images.
         Destroy(this.storyImage.gameObject);
         this.storyImage = null;

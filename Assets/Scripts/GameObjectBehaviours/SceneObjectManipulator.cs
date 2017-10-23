@@ -25,8 +25,7 @@ public class SceneObjectManipulator : MonoBehaviour
 
     void Start() {
         Logger.Log("started scene object manipulator");
-        // TODO: add necessary components: colliders, etc.
-        // Or, just do this in a prefab when we load a prefab.
+        // TODO: add necessary components in a prefab.
 
         this.button.onClick.AddListener(this.clickUnityAction);
     }
