@@ -8,4 +8,13 @@ public static class Constants {
 
     // ROS topics.
 
+
 }
+
+// Display Modes.
+public enum DisplayMode
+{
+    Landscape,
+    LandscapeWide,
+    Portrait
+};

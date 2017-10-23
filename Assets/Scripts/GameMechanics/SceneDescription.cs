@@ -27,6 +27,23 @@ struct SceneObject {
 // This is necessary so that we can describe scenes in plaintext, so that they
 // can be stored easily as JSON files and can be sent over the network.
 [Serializable]
+// This file contains the format in which we describe a scene's layout
+// and components.
+
+public struct TriggerAction {
+    
+}
+
+public struct TriggerCondition {
+    
+}
+
+public struct Trigger {
+    
+}
+
+
+
 public class SceneDescription {
     public string displayMode; // Either "landscape" or "portrait".
     public string storyImageFile; // E.g. "the_hungry_toad_01".

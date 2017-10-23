@@ -72,8 +72,6 @@ public class GameController : MonoBehaviour {
         this.portraitBackButton.onClick.AddListener(onBackButtonClick);
 
         this.storyManager = GetComponent<StoryManager>();
-        this.storyManager.HelloWorld();
-
     }
 
     // Update() is called once per frame.

@@ -23,6 +23,10 @@ public class StoryManager : MonoBehaviour {
     private GameObject textPanel;
     private GameObject currentStanza; // Stanza is just for disaply, we keep references to all TinkerText so it's not necessary to reference through a stanza.
 
+    private float graphicsPanelWidth;
+    private float graphicsPanelHeight;
+    private float graphicsPanelAspectRatio;
+
     // Variables for loading TinkerTexts.
     private float MIN_TINKER_TEXT_WIDTH = 200; // Based on size of gifs.
     private float TEXT_HEIGHT = 100; // The actual text is smaller than whole TinkerText.
@@ -36,10 +40,18 @@ public class StoryManager : MonoBehaviour {
     private Dictionary<string, GameObject> sceneObjects;
     // The image we loaded for this scene.
     private GameObject storyImage;
+    // Need to know the actual dimensions of the background image, so that we
+    // can correctly place new SceneObjects on the background.
+    private float storyImageWidth;
+    private float storyImageHeight;
+    // The (x,y) coordinates of the upper left corner of the image in relation
+    // to the upper left corner of the encompassing GameObject.
+    private float storyImageX;
+    private float storyImageY;
 
     private GameObject testObj;
 
-    private string displayMode = "landscape"; // TODO: use enum?
+    private DisplayMode displayMode;
 
 	void Awake() {
         Logger.Log("StoryManager awake");
@@ -48,25 +60,14 @@ public class StoryManager : MonoBehaviour {
     void Start() {
         Logger.Log("StoryManager start");
 
-        this.graphicsPanel = landscapeGraphicsPanel;
-        this.textPanel = landscapeTextPanel;
+        this.SetDisplayMode(DisplayMode.Landscape);
         this.tinkerTexts = new List<GameObject>();
         this.stanzas = new List<GameObject>();
         this.sceneObjects = new Dictionary<string, GameObject>();
 
-        this.testObj = new GameObject();
-        testObj.AddComponent<RectTransform>();
+        this.testObj = (GameObject)Instantiate((GameObject)Resources.Load("Prefabs/SceneObject"));
         testObj.transform.SetParent(this.graphicsPanel.transform, false);
-        //testObj.GetComponent<RectTransform>().localPosition = Vector3.zero;
-        testObj.GetComponent<RectTransform>().sizeDelta = new Vector2(50, 50);
-        testObj.AddComponent<Image>();
-        testObj.GetComponent<Image>().color = Color.red;
-
-        this.testObj.AddComponent<SceneObjectManipulator>();
-    }
-
-    public void HelloWorld() {
-        Logger.Log("I can call methods");
+        this.testObj.GetComponent<RectTransform>().SetAsLastSibling();
     }
 
     // Main function to be called by GameController.
@@ -83,6 +84,9 @@ public class StoryManager : MonoBehaviour {
         foreach (string word in description.getText().Split(' ')) {
             this.loadTinkerText(word);
         }
+
+        // Load all scene objects.
+        // foreach
 
         // Triggers
         //foreach (Trigger trigger in description.getTriggers()) {
@@ -101,11 +105,28 @@ public class StoryManager : MonoBehaviour {
         newObj.transform.SetParent(this.graphicsPanel.transform, false);
         newObj.transform.localPosition = Vector3.zero;
         newObj.GetComponent<AspectRatioFitter>().aspectMode = AspectRatioFitter.AspectMode.FitInParent;
-		string fullImagePath = "StoryPages/" + storyName + "/" + imageFile;
+        newObj.GetComponent<AspectRatioFitter>().aspectRatio = this.graphicsPanelAspectRatio;
+        string fullImagePath = "StoryPages/" + storyName + "/" + imageFile;
         Sprite sprite = Resources.Load<Sprite>(fullImagePath);
         newObj.GetComponent<Image>().sprite = sprite;
         newObj.GetComponent<Image>().preserveAspect = true;
-        this.storyImage = newObj;
+        // Figure out sizing so that later scene objects can be loaded relative
+        // to the background image for accurate overlay.
+        Texture texture = Resources.Load<Texture>(fullImagePath);
+        float imageAspectRatio = (float)texture.width / (float)texture.height;
+        if (imageAspectRatio > this.graphicsPanelAspectRatio) {
+            // Width is the constraining factor.
+            this.storyImageWidth = this.graphicsPanelWidth;
+            this.storyImageHeight = this.graphicsPanelWidth * (float) texture.height / (float) texture.width;
+            this.storyImageX = 0;
+            this.storyImageY = -(this.graphicsPanelHeight - this.storyImageHeight) / 2;
+        } else {
+            // Height is the constraining factor.
+            this.storyImageHeight = this.graphicsPanelHeight;
+            this.storyImageWidth = this.graphicsPanelHeight * (float)texture.width / (float)texture.height;
+            this.storyImageY = 0;
+            this.storyImageX = (this.graphicsPanelWidth - this.storyImageWidth) / 2;
+        }
     }
 
     // Add a new TinkerText for the given word.
@@ -133,10 +154,12 @@ public class StoryManager : MonoBehaviour {
         }
 		// Initialize the TinkerText width correctly.
         // Set new TinkerText parent to be the stanza.
-		newTinkerText.GetComponent<TinkerText>().Init(preferredWidth);
+        // TODO: set TinkerText id based on the info from JSON SceneDescription.
+		newTinkerText.GetComponent<TinkerText>().Init(1, preferredWidth);
 		newTinkerText.transform.SetParent(this.currentStanza.transform, false);
         SceneObjectManipulator manip = testObj.GetComponent<SceneObjectManipulator>();
-        newTinkerText.GetComponent<TinkerText>().AddClickHandler(manip.Highlight("blue"));
+        newTinkerText.GetComponent<TinkerText>().AddClickHandler(manip.Highlight(Color.blue));
+        newTinkerText.GetComponent<TinkerText>().AddClickHandler(manip.Move(new Vector3(this.storyImageX, this.storyImageY)));
         this.remainingStanzaWidth -= preferredWidth;
         this.tinkerTexts.Add(newTinkerText);
     }
@@ -162,10 +185,12 @@ public class StoryManager : MonoBehaviour {
         foreach (GameObject stanza in this.stanzas) {
             Destroy(stanza);
         }
+        this.stanzas = new List<GameObject>();
         // Destroy TinkerText objects we have a reference to, and reset list.
         foreach (GameObject tinkertext in this.tinkerTexts) {
             Destroy(tinkertext);
         }
+        this.tinkerTexts = new List<GameObject>();
         this.tinkerTexts = new List<GameObject>();
         // Destroy SceneObjects we have a reference to, and empty dictionary.
         foreach (KeyValuePair<string,GameObject> obj in this.sceneObjects) {
@@ -179,28 +204,30 @@ public class StoryManager : MonoBehaviour {
 
     // Called by GameController to rotate display mode. We need to update our
     // internal references to textPanel and graphicsPanel.
-    public void SetDisplayMode(string newMode) {
-        if (newMode != this.displayMode){
-            this.displayMode = newMode;
-            switch (this.displayMode)
-            {
-                case "landscape":
-                    this.graphicsPanel = this.landscapeGraphicsPanel;
-                    this.textPanel = this.landscapeTextPanel;
-                    break;
-                case "landscapeWide":
-                    this.graphicsPanel = this.landscapeWideGraphicsPanel;
-                    this.textPanel = this.landscapeWideTextPanel;
-                    break;
-                case "portrait":
-                    this.graphicsPanel = this.portraitGraphicsPanel;
-                    this.textPanel = this.portraitTextPanel;
-                    break;
-                default:
-                    Logger.LogError("unknown display mode " + newMode);
-                    break;
-            }
+    public void SetDisplayMode(DisplayMode newMode) {
+        this.displayMode = newMode;
+        switch (this.displayMode)
+        {
+            case DisplayMode.Landscape:
+                this.graphicsPanel = this.landscapeGraphicsPanel;
+                this.textPanel = this.landscapeTextPanel;
+                break;
+            case DisplayMode.LandscapeWide:
+                this.graphicsPanel = this.landscapeWideGraphicsPanel;
+                this.textPanel = this.landscapeWideTextPanel;
+                break;
+            case DisplayMode.Portrait:
+                this.graphicsPanel = this.portraitGraphicsPanel;
+                this.textPanel = this.portraitTextPanel;
+                break;
+            default:
+                Logger.LogError("unknown display mode " + newMode);
+                break;
         }
+        Vector2 rect = this.graphicsPanel.GetComponent<RectTransform>().sizeDelta;
+        this.graphicsPanelWidth = (float)rect.x;
+        this.graphicsPanelHeight = (float)rect.y;
+        this.graphicsPanelAspectRatio = this.graphicsPanelWidth / this.graphicsPanelHeight;
     }
 
 }

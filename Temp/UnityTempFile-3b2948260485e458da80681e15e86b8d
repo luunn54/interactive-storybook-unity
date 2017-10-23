@@ -92,7 +92,6 @@
 'Assets/Scripts/GameMechanics/GameController.cs'
 'Assets/Scripts/GameMechanics/SceneDescription.cs'
 'Assets/Scripts/GameMechanics/StoryManager.cs'
-'Assets/Scripts/GameObjectBehaviours/ObjectAction.cs'
 'Assets/Scripts/GameObjectBehaviours/SceneManipulatorAPI.cs'
 'Assets/Scripts/GameObjectBehaviours/SceneObjectManipulator.cs'
 'Assets/Scripts/GameObjectBehaviours/TinkerText.cs'
