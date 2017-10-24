@@ -1,5 +1,12 @@
 {
   "displayMode": "landscape",
-  "storyImageFile": "the_hungry_toad_02",
-  "text": "hello hi longwordIam nextstanza? \"hello world\" this is a test, blueberry pie"
+  "storyImageFile": "the_hungry_toad_03",
+  "text": "Toad was always hungry. He ate and ate and ate, but he always wanted more.",
+  "sceneObjects": [
+    {
+      "name": "toad",
+      "asset": "some_asset.png",
+      "position": {"left": 24, "top": 14, "width": 290, "height": 173}
+    }
+  ]
 }

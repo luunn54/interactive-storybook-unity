@@ -7,20 +7,45 @@
 
 using UnityEngine;
 using System;
-using System.Collections.Generic;
 using System.IO;
+
+// Describes the position of a scene object. Uses the same format as the
+// output from our Mechanical Turk HITs.
+[Serializable]
+public struct Position {
+    public int left;
+    public int top;
+    public int width;
+    public int height;
+}
 
 // Describes a scene object.
 // Contains the asset file to load the image from, the position to load
 // the image, and an identifying name that is unique among other SceneObject
 // objects in this scene.
-struct SceneObject {
-    string name;
-    string asset; // Can be empty. This means there's no sprite to load.
-    int x;
-    int y;
-    int scale_x;
-    int scale_y;
+[Serializable]
+public struct SceneObject {
+    public string name;
+    public string asset; // Can be empty. This means there's no sprite to load.
+    public Position position;
+}
+
+[Serializable]
+public struct TriggerAction {
+    
+}
+
+[Serializable]
+public struct TriggerCondition {
+    
+}
+
+[Serializable]
+public struct Trigger {
+    public string textId;
+    public string sceneObjectName;
+    public TriggerCondition condition;
+    public TriggerAction action;
 }
 
 // SceneDescription can be serialized to and from JSON.
@@ -29,28 +54,15 @@ struct SceneObject {
 [Serializable]
 // This file contains the format in which we describe a scene's layout
 // and components.
-
-public struct TriggerAction {
-    
-}
-
-public struct TriggerCondition {
-    
-}
-
-public struct Trigger {
-    
-}
-
-
-
 public class SceneDescription {
     public string displayMode; // Either "landscape" or "portrait".
     public string storyImageFile; // E.g. "the_hungry_toad_01".
     public string text; // All of the text. StoryManager will create TinkerText.
+    public SceneObject[] sceneObjects; // Scene objects.
+    //public Trigger[] triggers;
 
     public SceneDescription() {
-        
+        // Empty constructor if no JSON file is passed.
     }
 
     public SceneDescription(string jsonFile) {
@@ -64,8 +76,7 @@ public class SceneDescription {
 		JsonUtility.FromJsonOverwrite(dataAsJson, this);
     }
 
-    // Getters
-
+    // Getters.
     public string getDisplayMode() {
         return this.displayMode;
     }
@@ -78,7 +89,12 @@ public class SceneDescription {
         return this.text;
     }
 
-    // TODO: Relationships between words and objects.
-    // Dictionary<string, SceneObject> objects;
+    public SceneObject[] getSceneObjects() {
+        return this.sceneObjects;
+    }
+
+    //public Trigger[] getTriggers() {
+    //    return this.triggers;
+    //}
 
 }

@@ -48,7 +48,8 @@ public class StoryManager : MonoBehaviour {
     // to the upper left corner of the encompassing GameObject.
     private float storyImageX;
     private float storyImageY;
-
+    // Ratio of the story image to the original texture size.
+    private float imageScaleFactor;
     private DisplayMode displayMode;
 
 	void Awake() {
@@ -62,11 +63,6 @@ public class StoryManager : MonoBehaviour {
         this.tinkerTexts = new List<GameObject>();
         this.stanzas = new List<GameObject>();
         this.sceneObjects = new Dictionary<string, GameObject>();
-
-        GameObject testObj = (GameObject)Instantiate((GameObject)Resources.Load("Prefabs/SceneObject"));
-        testObj.transform.SetParent(this.graphicsPanel.transform, false);
-        testObj.GetComponent<RectTransform>().SetAsLastSibling();
-        this.sceneObjects["test"] = testObj;
     }
 
     // Main function to be called by GameController.
@@ -85,9 +81,11 @@ public class StoryManager : MonoBehaviour {
         }
 
         // Load all scene objects.
-        // foreach
+        foreach (SceneObject sceneObject in description.getSceneObjects()) {
+            this.loadSceneObject(sceneObject);
+        }
 
-        // Triggers
+        // Load triggers.
         //foreach (Trigger trigger in description.getTriggers()) {
         //    this.loadTrigger(trigger);
         //}
@@ -112,6 +110,8 @@ public class StoryManager : MonoBehaviour {
         // Figure out sizing so that later scene objects can be loaded relative
         // to the background image for accurate overlay.
         Texture texture = Resources.Load<Texture>(fullImagePath);
+        Logger.Log(texture.width);
+        Logger.Log(texture.height);
         float imageAspectRatio = (float)texture.width / (float)texture.height;
         if (imageAspectRatio > this.graphicsPanelAspectRatio) {
             // Width is the constraining factor.
@@ -126,6 +126,7 @@ public class StoryManager : MonoBehaviour {
             this.storyImageY = 0;
             this.storyImageX = (this.graphicsPanelWidth - this.storyImageWidth) / 2;
         }
+        this.imageScaleFactor = this.storyImageWidth / texture.width;
         this.storyImage = newObj;
     }
 
@@ -134,7 +135,6 @@ public class StoryManager : MonoBehaviour {
         if (word.Length == 0) {
             return;
         }
-        Logger.Log("got word: " + word);
 		// Create a new stanza if we there's not enough stanza width left.
 		// Figure out how wide this word will be, first create the word.
 		GameObject newTinkerText = Instantiate((GameObject)Resources.Load("Prefabs/TinkerText"));
@@ -155,14 +155,31 @@ public class StoryManager : MonoBehaviour {
 		// Initialize the TinkerText width correctly.
         // Set new TinkerText parent to be the stanza.
         // TODO: set TinkerText id based on the info from JSON SceneDescription.
+        // Probably just set them in order or something.
 		newTinkerText.GetComponent<TinkerText>().Init(1, preferredWidth);
 		newTinkerText.transform.SetParent(this.currentStanza.transform, false);
-        SceneObjectManipulator manip = this.sceneObjects["test"].GetComponent<SceneObjectManipulator>();
-        newTinkerText.GetComponent<TinkerText>().AddClickHandler(manip.Highlight(Color.blue));
-        newTinkerText.GetComponent<TinkerText>().AddClickHandler(manip.Move(new Vector3(this.storyImageX, this.storyImageY)));
-        newTinkerText.GetComponent<TinkerText>().AddClickHandler(manip.ChangeSize(new Vector2(200, 200)));
+        //SceneObjectManipulator manip = this.sceneObjects["test"].GetComponent<SceneObjectManipulator>();
+        //newTinkerText.GetComponent<TinkerText>().AddClickHandler(manip.Highlight(Color.blue));
+        //newTinkerText.GetComponent<TinkerText>().AddClickHandler(manip.Move(new Vector3(this.storyImageX, this.storyImageY)));
+        //newTinkerText.GetComponent<TinkerText>().AddClickHandler(manip.ChangeSize(new Vector2(200, 200)));
         this.remainingStanzaWidth -= preferredWidth;
         this.tinkerTexts.Add(newTinkerText);
+    }
+
+    // Adds a SceneObject to the story scene.
+    private void loadSceneObject(SceneObject sceneObject) {
+        GameObject newObj = (GameObject)Instantiate((GameObject)Resources.Load("Prefabs/SceneObject"));
+        newObj.transform.SetParent(this.graphicsPanel.transform, false);
+        newObj.GetComponent<RectTransform>().SetAsLastSibling();
+        this.sceneObjects[sceneObject.name] = newObj;
+        // Set the position.
+        SceneObjectManipulator manip = newObj.GetComponent<SceneObjectManipulator>();
+        manip.Move(new Vector3(this.storyImageX + sceneObject.position.left * this.imageScaleFactor,
+                               this.storyImageY - sceneObject.position.top * this.imageScaleFactor))();
+        manip.ChangeSize(new Vector2(sceneObject.position.width * this.imageScaleFactor,
+                                     sceneObject.position.height * this.imageScaleFactor))();
+        // Test adding a click handler.
+        this.tinkerTexts[0].GetComponent<TinkerText>().AddClickHandler(manip.Highlight(Color.blue));
     }
 
     private void loadBoundingBox() {

@@ -129,6 +129,7 @@ public class GameController : MonoBehaviour {
         Debug.Log("Next Button clicked.");
         SceneDescription d = new SceneDescription("the_hungry_toad_01.json");
 		this.storyManager.LoadScene(d);
+        Logger.Log(d.getSceneObjects().Length);
 
 		//this.switchToPortraitMode();
 
