@@ -5,6 +5,8 @@
 // SceneManager takes a given SceneDescription and loads it, setting up
 // necessarily colliders and handlers to enusre that the triggers occur.
 
+// TODO: access control - adjust things so not everything is public.
+
 using UnityEngine;
 using System;
 using System.IO;
@@ -25,8 +27,9 @@ public struct Position {
 // objects in this scene.
 [Serializable]
 public struct SceneObject {
-    public string name;
-    public string asset; // Can be empty. This means there's no sprite to load.
+    public string label;
+    // Can be empty. This means there's no sprite to load.
+    public string asset;
     public Position position;
 }
 
@@ -43,7 +46,7 @@ public struct TriggerCondition {
 [Serializable]
 public struct Trigger {
     public string textId;
-    public string sceneObjectName;
+    public string sceneObjectLabel;
     public TriggerCondition condition;
     public TriggerAction action;
 }
@@ -52,14 +55,21 @@ public struct Trigger {
 // This is necessary so that we can describe scenes in plaintext, so that they
 // can be stored easily as JSON files and can be sent over the network.
 [Serializable]
-// This file contains the format in which we describe a scene's layout
-// and components.
 public class SceneDescription {
-    public string displayMode; // Either "landscape" or "portrait".
-    public string storyImageFile; // E.g. "the_hungry_toad_01".
-    public string text; // All of the text. StoryManager will create TinkerText.
-    public SceneObject[] sceneObjects; // Scene objects.
-    //public Trigger[] triggers;
+    // TODO: use the enum.
+    public string displayMode;
+
+    // E.g. // "the_hungry_toad_01".
+    public string storyImageFile;
+
+    // All of the text. StoryManager will create TinkerText.
+    public string text;
+
+    // List of scene objects to place.
+    public SceneObject[] sceneObjects;
+
+    // Triggers to coordinate connections among SceneObjects and TinkerTexts.
+    public Trigger[] triggers;
 
     public SceneDescription() {
         // Empty constructor if no JSON file is passed.
@@ -71,30 +81,12 @@ public class SceneDescription {
 
     // Populate this SceneDescription with JSON data.
     private void loadFromJSON(string jsonFile) {
-        string storyName = jsonFile.Substring(0, jsonFile.LastIndexOf("_", StringComparison.CurrentCulture));
-        string dataAsJson = File.ReadAllText("Assets/SceneDescriptions/" + storyName + "/" + jsonFile);
+        string storyName = jsonFile.Substring(0,
+            jsonFile.LastIndexOf("_", StringComparison.CurrentCulture)
+        );
+        string dataAsJson = File.ReadAllText("Assets/SceneDescriptions/" +
+                                             storyName + "/" + jsonFile);
 		JsonUtility.FromJsonOverwrite(dataAsJson, this);
     }
-
-    // Getters.
-    public string getDisplayMode() {
-        return this.displayMode;
-    }
-
-    public string getStoryImageFile() {
-        return this.storyImageFile;
-    }
-
-    public string getText() {
-        return this.text;
-    }
-
-    public SceneObject[] getSceneObjects() {
-        return this.sceneObjects;
-    }
-
-    //public Trigger[] getTriggers() {
-    //    return this.triggers;
-    //}
 
 }

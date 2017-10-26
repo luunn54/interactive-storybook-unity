@@ -2,11 +2,47 @@
   "displayMode": "landscape",
   "storyImageFile": "the_hungry_toad_03",
   "text": "Toad was always hungry. He ate and ate and ate, but he always wanted more.",
+  "audio": "hungry_toad_audio",
+  "audioTimestamps": "hungry_toad_timestamps.txt",
   "sceneObjects": [
     {
-      "name": "toad",
-      "asset": "some_asset.png",
-      "position": {"left": 24, "top": 14, "width": 290, "height": 173}
+      "position": {
+        "left": 24,
+        "top": 14,
+        "width": 290,
+        "height": 173
+      },
+      "label": "toad"
+    },
+    {
+      "position": {
+        "left": 59,
+        "top": 17,
+        "width": 184,
+        "height": 145
+      }, 
+      "label": "hungry"
+    },
+    {
+      "position": {
+        "left": 22,
+        "top": 21,
+        "width": 248,
+        "height": 176
+      },
+      "label": "ate"
+    }
+  ],
+  "triggers": [
+    {
+      "textId": 0,
+      "sceneObjectName": "toad",
+      "condition": {
+
+      },
+      "action": {
+
+      }
     }
   ]
 }

@@ -1,0 +1,2 @@
+/Users/hannalee/mit/meng/interactive-storybook-unity/Temp/UnityVS_obj/Debug/interactive-storybook-unity.csprojResolveAssemblyReference.cache
+/Users/hannalee/mit/meng/interactive-storybook-unity/Temp/UnityVS_obj/Debug/interactive-storybook-unity.csproj.CoreCompileInputs.cache

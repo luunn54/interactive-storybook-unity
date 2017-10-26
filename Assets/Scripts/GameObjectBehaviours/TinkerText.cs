@@ -30,13 +30,19 @@ public class TinkerText : MonoBehaviour
 
     // These numbers should match the prefab, putting them here is just for
     // convenience when setting sizeDelta.
-    private float TINKER_TEXT_HEIGHT = 300; // Height of entire TinkerText, including graphic.
-    private float BUTTON_TEXT_HEIGHT = 120; // Height of the button and text components.
+    // Height of entire TinkerText, including graphic.
+    public static float TINKER_TEXT_HEIGHT = 250;
+    public static float MIN_WIDTH = 150; // Based on size of GIFs.
+    // Height of the button and text components.
+    public static float BUTTON_TEXT_HEIGHT = 100;
 
     // Set up click handler.
     // TODO: Consider using MouseDown and MouseUp instead of Click?
     void Start() {
-        this.textButton.GetComponent<Button>().onClick.AddListener(this.clickUnityAction);
+        // Initialize it to an empty action to avoid null reference exception.
+        this.clickUnityAction = new UnityAction(() => { });
+        this.textButton.GetComponent<Button>()
+            .onClick.AddListener(this.clickUnityAction);
     }
 
     // StoryManager will call this to give TinkerText a chance to readjust the
@@ -48,9 +54,11 @@ public class TinkerText : MonoBehaviour
         this.id = id;
         gameObject.SetActive(true);
         // Update size of TinkerText.
-        GetComponent<RectTransform>().sizeDelta = new Vector2(newWidth, this.TINKER_TEXT_HEIGHT);
+        GetComponent<RectTransform>().sizeDelta =
+            new Vector2(newWidth, TINKER_TEXT_HEIGHT);
         // Update size of Button.
-        this.textButton.GetComponent<RectTransform>().sizeDelta = new Vector2(newWidth, this.BUTTON_TEXT_HEIGHT);
+        this.textButton.GetComponent<RectTransform>().sizeDelta =
+            new Vector2(newWidth, BUTTON_TEXT_HEIGHT);
     }
 
     // Add a new action to the UnityAction click handler.

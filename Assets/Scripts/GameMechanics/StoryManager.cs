@@ -21,16 +21,17 @@ public class StoryManager : MonoBehaviour {
     // Used for internal references.
     private GameObject graphicsPanel;
     private GameObject textPanel;
-    private GameObject currentStanza; // Stanza is just for disaply, we keep references to all TinkerText so it's not necessary to reference through a stanza.
+    private GameObject currentStanza;
 
     private float graphicsPanelWidth;
     private float graphicsPanelHeight;
     private float graphicsPanelAspectRatio;
 
     // Variables for loading TinkerTexts.
-    private float MIN_TINKER_TEXT_WIDTH = 200; // Based on size of gifs.
-    private float TEXT_HEIGHT = 100; // The actual text is smaller than whole TinkerText.
-    private float remainingStanzaWidth = 0; // Width remaining in current stanza.
+    private float STANZA_SPACING = 20; // Matches Prefab.
+    private float MIN_TINKER_TEXT_WIDTH = TinkerText.MIN_WIDTH;
+    private float TEXT_HEIGHT = TinkerText.BUTTON_TEXT_HEIGHT;
+    private float remainingStanzaWidth = 0; // For loading TinkerTexts.
 
     // Dynamically created Stanzas.
     private List<GameObject> stanzas;
@@ -71,22 +72,22 @@ public class StoryManager : MonoBehaviour {
     // place, and attaching callbacks to created GameObjects, where these
     // callbacks involve functions from SceneManipulatorAPI.
     public void LoadScene(SceneDescription description) {
-        Logger.Log(description.getStoryImageFile());
-        this.loadImage(description.getStoryImageFile());
+        Logger.Log(description.storyImageFile);
+        this.loadImage(description.storyImageFile);
 
         // Load all words as TinkerText. Begin at beginning of a stanza.
         this.remainingStanzaWidth = 0;
-        foreach (string word in description.getText().Split(' ')) {
+        foreach (string word in description.text.Split(' ')) {
             this.loadTinkerText(word);
         }
 
         // Load all scene objects.
-        foreach (SceneObject sceneObject in description.getSceneObjects()) {
+        foreach (SceneObject sceneObject in description.sceneObjects) {
             this.loadSceneObject(sceneObject);
         }
 
         // Load triggers.
-        //foreach (Trigger trigger in description.getTriggers()) {
+        //foreach (Trigger trigger in description.triggers) {
         //    this.loadTrigger(trigger);
         //}
 
@@ -95,14 +96,18 @@ public class StoryManager : MonoBehaviour {
     // Argument imageFile should be something like "the_hungry_toad_01" and then
     // this function will find it in the Resources directory and load it.
     private void loadImage(string imageFile) {
-        string storyName = imageFile.Substring(0, imageFile.LastIndexOf("_", StringComparison.CurrentCulture));
+        string storyName = imageFile.Substring(0,
+            imageFile.LastIndexOf("_", StringComparison.CurrentCulture)
+        );
         GameObject newObj = new GameObject();
         newObj.AddComponent<Image>();
         newObj.AddComponent<AspectRatioFitter>();
         newObj.transform.SetParent(this.graphicsPanel.transform, false);
         newObj.transform.localPosition = Vector3.zero;
-        newObj.GetComponent<AspectRatioFitter>().aspectMode = AspectRatioFitter.AspectMode.FitInParent;
-        newObj.GetComponent<AspectRatioFitter>().aspectRatio = this.graphicsPanelAspectRatio;
+        newObj.GetComponent<AspectRatioFitter>().aspectMode =
+                  AspectRatioFitter.AspectMode.FitInParent;
+        newObj.GetComponent<AspectRatioFitter>().aspectRatio =
+                  this.graphicsPanelAspectRatio;
         string fullImagePath = "StoryPages/" + storyName + "/" + imageFile;
         Sprite sprite = Resources.Load<Sprite>(fullImagePath);
         newObj.GetComponent<Image>().sprite = sprite;
@@ -116,15 +121,17 @@ public class StoryManager : MonoBehaviour {
         if (imageAspectRatio > this.graphicsPanelAspectRatio) {
             // Width is the constraining factor.
             this.storyImageWidth = this.graphicsPanelWidth;
-            this.storyImageHeight = this.graphicsPanelWidth * (float) texture.height / (float) texture.width;
+            this.storyImageHeight = this.graphicsPanelWidth / imageAspectRatio;
             this.storyImageX = 0;
-            this.storyImageY = -(this.graphicsPanelHeight - this.storyImageHeight) / 2;
+            this.storyImageY = 
+                -(this.graphicsPanelHeight - this.storyImageHeight) / 2;
         } else {
             // Height is the constraining factor.
             this.storyImageHeight = this.graphicsPanelHeight;
-            this.storyImageWidth = this.graphicsPanelHeight * (float)texture.width / (float)texture.height;
+            this.storyImageWidth = this.graphicsPanelHeight * imageAspectRatio;
             this.storyImageY = 0;
-            this.storyImageX = (this.graphicsPanelWidth - this.storyImageWidth) / 2;
+            this.storyImageX = 
+                (this.graphicsPanelWidth - this.storyImageWidth) / 2;
         }
         this.imageScaleFactor = this.storyImageWidth / texture.width;
         this.storyImage = newObj;
@@ -137,20 +144,29 @@ public class StoryManager : MonoBehaviour {
         }
 		// Create a new stanza if we there's not enough stanza width left.
 		// Figure out how wide this word will be, first create the word.
-		GameObject newTinkerText = Instantiate((GameObject)Resources.Load("Prefabs/TinkerText"));
+		GameObject newTinkerText =
+            Instantiate((GameObject)Resources.Load("Prefabs/TinkerText"));
         GameObject newText = newTinkerText.GetComponent<TinkerText>().text;
         newText.GetComponent<Text>().text = word;
-        float preferredWidth = LayoutUtility.GetPreferredWidth(newText.GetComponent<RectTransform>());
+        float preferredWidth =
+            LayoutUtility.GetPreferredWidth(
+                newText.GetComponent<RectTransform>()
+            );
         preferredWidth = Math.Max(preferredWidth, this.MIN_TINKER_TEXT_WIDTH);
-        newText.GetComponent<RectTransform>().sizeDelta = new Vector2(preferredWidth, this.TEXT_HEIGHT);
+        newText.GetComponent<RectTransform>().sizeDelta =
+                   new Vector2(preferredWidth, this.TEXT_HEIGHT);
+        //Logger.Log(word + " " + preferredWidth.ToString() +
+                   //" " + remainingStanzaWidth.ToString());
         if (preferredWidth > this.remainingStanzaWidth){
             // Add a new stanza.
-            GameObject newStanza = Instantiate((GameObject)Resources.Load("Prefabs/StanzaPanel"));
+            GameObject newStanza =
+                Instantiate((GameObject)Resources.Load("Prefabs/StanzaPanel"));
             newStanza.transform.SetParent(this.textPanel.transform, false);
             this.stanzas.Add(newStanza);
             this.currentStanza = newStanza;
             // Reset the remaining stanza width.
-            this.remainingStanzaWidth = this.textPanel.GetComponent<RectTransform>().sizeDelta.x;
+            this.remainingStanzaWidth =
+                    this.textPanel.GetComponent<RectTransform>().sizeDelta.x;
         }
 		// Initialize the TinkerText width correctly.
         // Set new TinkerText parent to be the stanza.
@@ -158,40 +174,34 @@ public class StoryManager : MonoBehaviour {
         // Probably just set them in order or something.
 		newTinkerText.GetComponent<TinkerText>().Init(1, preferredWidth);
 		newTinkerText.transform.SetParent(this.currentStanza.transform, false);
-        //SceneObjectManipulator manip = this.sceneObjects["test"].GetComponent<SceneObjectManipulator>();
-        //newTinkerText.GetComponent<TinkerText>().AddClickHandler(manip.Highlight(Color.blue));
-        //newTinkerText.GetComponent<TinkerText>().AddClickHandler(manip.Move(new Vector3(this.storyImageX, this.storyImageY)));
-        //newTinkerText.GetComponent<TinkerText>().AddClickHandler(manip.ChangeSize(new Vector2(200, 200)));
         this.remainingStanzaWidth -= preferredWidth;
+        this.remainingStanzaWidth -= STANZA_SPACING;
+        //Logger.Log("remaining: " + remainingStanzaWidth.ToString());
         this.tinkerTexts.Add(newTinkerText);
     }
 
     // Adds a SceneObject to the story scene.
     private void loadSceneObject(SceneObject sceneObject) {
-        GameObject newObj = (GameObject)Instantiate((GameObject)Resources.Load("Prefabs/SceneObject"));
+        GameObject newObj = 
+            Instantiate((GameObject)Resources.Load("Prefabs/SceneObject"));
         newObj.transform.SetParent(this.graphicsPanel.transform, false);
         newObj.GetComponent<RectTransform>().SetAsLastSibling();
-        this.sceneObjects[sceneObject.name] = newObj;
+        this.sceneObjects[sceneObject.label] = newObj;
         // Set the position.
-        SceneObjectManipulator manip = newObj.GetComponent<SceneObjectManipulator>();
-        manip.Move(new Vector3(this.storyImageX + sceneObject.position.left * this.imageScaleFactor,
-                               this.storyImageY - sceneObject.position.top * this.imageScaleFactor))();
-        manip.ChangeSize(new Vector2(sceneObject.position.width * this.imageScaleFactor,
-                                     sceneObject.position.height * this.imageScaleFactor))();
+        SceneObjectManipulator manip =
+            newObj.GetComponent<SceneObjectManipulator>();
+        Position pos = sceneObject.position;
+        manip.Move(
+            new Vector3(this.storyImageX + pos.left * this.imageScaleFactor,
+                        this.storyImageY - pos.top * this.imageScaleFactor)
+        )();
+        manip.ChangeSize(
+            new Vector2(pos.width * this.imageScaleFactor,
+                        pos.height * this.imageScaleFactor)
+        )();
         // Test adding a click handler.
-        this.tinkerTexts[0].GetComponent<TinkerText>().AddClickHandler(manip.Highlight(Color.blue));
-    }
-
-    private void loadBoundingBox() {
-        // Create empty game object and try to position it correctly.
-        GameObject testObject = new GameObject();
-        testObject.transform.SetParent(this.graphicsPanel.transform, false);
-        Logger.Log(testObject.transform.parent.gameObject.transform.name);
-        testObject.AddComponent<BoxCollider2D>();
-        testObject.GetComponent<BoxCollider2D>().enabled = true;
-        testObject.transform.localPosition = Vector3.zero;
-        testObject.transform.localScale = new Vector3(1, 1, 1);
-        testObject.AddComponent<SceneObjectManipulator>();
+        this.tinkerTexts[0].GetComponent<TinkerText>()
+            .AddClickHandler(manip.Highlight(Color.blue));
     }
 
     // Called by GameController when we should remove all elements we've added
@@ -239,10 +249,12 @@ public class StoryManager : MonoBehaviour {
                 Logger.LogError("unknown display mode " + newMode);
                 break;
         }
-        Vector2 rect = this.graphicsPanel.GetComponent<RectTransform>().sizeDelta;
+        Vector2 rect =
+            this.graphicsPanel.GetComponent<RectTransform>().sizeDelta;
         this.graphicsPanelWidth = (float)rect.x;
         this.graphicsPanelHeight = (float)rect.y;
-        this.graphicsPanelAspectRatio = this.graphicsPanelWidth / this.graphicsPanelHeight;
+        this.graphicsPanelAspectRatio =
+            this.graphicsPanelWidth / this.graphicsPanelHeight;
     }
 
 }

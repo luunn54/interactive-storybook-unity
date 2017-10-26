@@ -24,10 +24,12 @@ public static class SceneManipulatorAPI {
     //}
 
     // Transform an action that takes a parameter into one that doesn't.
-    private static Action MakeAction(SceneObjectManipulator target, Action<SceneObjectManipulator, object[]> action, params object[] args) {
-        return () =>
-        {
-            action(target, args);
-        };
+    private static Action MakeAction(
+        SceneObjectManipulator target,
+        Action<SceneObjectManipulator, object[]> action, params object[] args) {
+            return () =>
+            {
+                action(target, args);
+            };
     }
 }
