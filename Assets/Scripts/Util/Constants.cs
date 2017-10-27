@@ -11,10 +11,16 @@ public static class Constants {
 
 }
 
+// Orientations.
+public enum Orientation {
+    Portrait,
+    Landscape
+}
+
 // Display Modes.
-public enum DisplayMode
-{
-    Landscape,
+// Related to Orientation but also deals with layout of the scene.
+public enum DisplayMode {
     LandscapeWide,
+    Landscape,
     Portrait
 };

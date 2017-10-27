@@ -20,6 +20,12 @@ public class SceneObjectManipulator : MonoBehaviour
     public Image image;
     public RectTransform rectTransform;
 
+    // TODO: add the concept of variables, so that variables can be
+    // saved between scenes. This also implies that we should not Destroy
+    // SceneObjects as we change pages, otherwise we lose that memory, and
+    // we should have an active set per page, and activate or deactivate the
+    // page, and only delete everything when we end the story.
+
     // UnityActions for various UI interactions (e.g. clicking).
     private UnityAction clickUnityAction;
 

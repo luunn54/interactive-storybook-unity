@@ -1,7 +1,7 @@
 // StoryManager loads a scene based on a SceneDescription, including loading
 // images, audio files, and drawing colliders and setting up callbacks to
-// handle trigger events. StoryManager uses SceneManipulationAPI for setting up
-// these callbacks.
+// handle trigger events. StoryManager uses methods in TinkerText and
+// SceneObjectManipulator for setting up these callbacks.
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -66,7 +66,7 @@ public class StoryManager : MonoBehaviour {
 
         this.gameController = GetComponent<GameController>();
 
-        this.SetDisplayMode(DisplayMode.Landscape);
+        this.setDisplayMode(DisplayMode.Landscape);
         this.tinkerTexts = new List<GameObject>();
         this.stanzas = new List<GameObject>();
         this.sceneObjects = new Dictionary<string, GameObject>();
@@ -78,9 +78,9 @@ public class StoryManager : MonoBehaviour {
     // place, and attaching callbacks to created GameObjects, where these
     // callbacks involve functions from SceneManipulatorAPI.
     public void LoadPage(SceneDescription description) {
-        Logger.Log(description.storyImageFile);
-        Logger.Log(description.displayMode);
-        Logger.Log(description.displayMode == DisplayMode.Landscape);
+
+        this.setDisplayMode(description.displayMode);
+
         this.loadImage(description.storyImageFile);
 
         // Load all words as TinkerText. Begin at beginning of a stanza.
@@ -123,8 +123,6 @@ public class StoryManager : MonoBehaviour {
         // Figure out sizing so that later scene objects can be loaded relative
         // to the background image for accurate overlay.
         Texture texture = Resources.Load<Texture>(fullImagePath);
-        Logger.Log(texture.width);
-        Logger.Log(texture.height);
         float imageAspectRatio = (float)texture.width / (float)texture.height;
         if (imageAspectRatio > this.graphicsPanelAspectRatio) {
             // Width is the constraining factor.
@@ -176,8 +174,6 @@ public class StoryManager : MonoBehaviour {
         }
 		// Initialize the TinkerText width correctly.
         // Set new TinkerText parent to be the stanza.
-        // TODO: set TinkerText id based on the info from JSON SceneDescription.
-        // Probably just set them in order or something.
         newTinkerText.GetComponent<TinkerText>()
                      .Init(this.tinkerTexts.Count, preferredWidth);
 		newTinkerText.transform.SetParent(this.currentStanza.transform, false);
@@ -272,34 +268,36 @@ public class StoryManager : MonoBehaviour {
         this.storyImage = null;
     }
 
-    // Called by GameController to rotate display mode. We need to update our
-    // internal references to textPanel and graphicsPanel.
-    public void SetDisplayMode(DisplayMode newMode) {
-        this.displayMode = newMode;
-        switch (this.displayMode)
-        {
-            case DisplayMode.Landscape:
-                this.graphicsPanel = this.landscapeGraphicsPanel;
-                this.textPanel = this.landscapeTextPanel;
-                break;
-            case DisplayMode.LandscapeWide:
-                this.graphicsPanel = this.landscapeWideGraphicsPanel;
-                this.textPanel = this.landscapeWideTextPanel;
-                break;
-            case DisplayMode.Portrait:
-                this.graphicsPanel = this.portraitGraphicsPanel;
-                this.textPanel = this.portraitTextPanel;
-                break;
-            default:
-                Logger.LogError("unknown display mode " + newMode);
-                break;
+    // Update the display mode. We need to update our internal references to
+    // textPanel and graphicsPanel.
+    public void setDisplayMode(DisplayMode newMode) {
+        if (this.displayMode != newMode) {
+            this.displayMode = newMode;
+            switch (this.displayMode)
+            {
+                case DisplayMode.Landscape:
+                    this.graphicsPanel = this.landscapeGraphicsPanel;
+                    this.textPanel = this.landscapeTextPanel;
+                    break;
+                case DisplayMode.LandscapeWide:
+                    this.graphicsPanel = this.landscapeWideGraphicsPanel;
+                    this.textPanel = this.landscapeWideTextPanel;
+                    break;
+                case DisplayMode.Portrait:
+                    this.graphicsPanel = this.portraitGraphicsPanel;
+                    this.textPanel = this.portraitTextPanel;
+                    break;
+                default:
+                    Logger.LogError("unknown display mode " + newMode);
+                    break;
+            }
+            Vector2 rect =
+                this.graphicsPanel.GetComponent<RectTransform>().sizeDelta;
+            this.graphicsPanelWidth = (float)rect.x;
+            this.graphicsPanelHeight = (float)rect.y;
+            this.graphicsPanelAspectRatio =
+                this.graphicsPanelWidth / this.graphicsPanelHeight;
         }
-        Vector2 rect =
-            this.graphicsPanel.GetComponent<RectTransform>().sizeDelta;
-        this.graphicsPanelWidth = (float)rect.x;
-        this.graphicsPanelHeight = (float)rect.y;
-        this.graphicsPanelAspectRatio =
-            this.graphicsPanelWidth / this.graphicsPanelHeight;
     }
 
 }

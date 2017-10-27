@@ -47,6 +47,8 @@ public class GameController : MonoBehaviour {
     private string storyName;
     private List<SceneDescription> storyPages;
     private int currentPageNumber = 0; // 0-indexed, index into this.storyPages.
+    // Orientations of each story. TODO: read from file, for now just hardcode.
+    private Dictionary<string, Orientation> orientations;
 
     void Awake()
     {
@@ -80,13 +82,18 @@ public class GameController : MonoBehaviour {
         this.portraitBackButton.onClick.AddListener(onBackButtonClick);
 
         this.storyPages = new List<SceneDescription>();
-        this.storyPages.Add(new SceneDescription("the_hungry_toad_02.json"));
+        this.orientations = new Dictionary<string, Orientation>();
 
         this.storyManager = GetComponent<StoryManager>();
 
         // TODO: Check if we are using ROS or not.
         // Either launch the splash screen to connect to ROS, or go straight
         // into the story selection process.
+
+        // Set up the orientations.
+        this.orientations["the_hungry_toad"] = Orientation.Landscape;
+        this.orientations["possum_and_the_peeper"] = Orientation.Landscape;
+
         this.selectStory("the_hungry_toad");
 
     }
@@ -111,11 +118,15 @@ public class GameController : MonoBehaviour {
 
     private void selectStory(string story) {
         this.storyName = story;
-        DirectoryInfo dir = new DirectoryInfo(Application.dataPath + "/SceneDescriptions/" + story);
+        DirectoryInfo dir = new DirectoryInfo(Application.dataPath +
+                                              "/SceneDescriptions/" + story);
         FileInfo[] files = dir.GetFiles("*.json");
+        Logger.Log(files.Length);
         // Sort to ensure pages are in order.
         Array.Sort(files, (f1, f2) => string.Compare(f1.Name, f2.Name));
         this.storyPages.Clear();
+        // Figure out the orientation of this story and tell SceneDescription.
+        SceneDescription.SetOrientation(this.orientations[storyName]);
         foreach (FileInfo file in files) {
             this.storyPages.Add(new SceneDescription(file.Name));          
         }

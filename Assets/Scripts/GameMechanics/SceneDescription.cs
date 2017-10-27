@@ -80,6 +80,8 @@ public struct Trigger {
 // can be stored easily as JSON files and can be sent over the network.
 [Serializable]
 public class SceneDescription {
+    private static Orientation orientation; // To be set by GameController.
+
     public DisplayMode displayMode;
     public string displayModeString; // Easier for deserialization.
 
@@ -103,6 +105,10 @@ public class SceneDescription {
         this.loadFromJSON(jsonFile);
     }
 
+    public static void SetOrientation(Orientation o) {
+        SceneDescription.orientation = o;
+    }
+
     // Populate this SceneDescription with JSON data.
     private void loadFromJSON(string jsonFile) {
         string storyName = jsonFile.Substring(0,
@@ -112,12 +118,10 @@ public class SceneDescription {
                                              storyName + "/" + jsonFile);
 		JsonUtility.FromJsonOverwrite(dataAsJson, this);
 
-        // Convert from strings to enums.
-        if (this.displayModeString != null) {
-            string dm = this.displayModeString.Substring(0, 1).ToUpper() +
-                                 this.displayModeString.Substring(1);
-            this.displayMode = (DisplayMode)Enum.Parse(typeof(DisplayMode), dm);
-        }
+        // Decide if the image should be in landscape or portrait mode.
+        this.setDisplayMode();
+
+        // Process triggers.
         for (int i = 0; i < this.triggers.Length; i++)
         {
             Trigger trigger = this.triggers[i];
@@ -151,6 +155,28 @@ public class SceneDescription {
                 );
             }
         }
+    }
+
+    private void setDisplayMode() {
+        string storyName = this.storyImageFile.Substring(0,
+            this.storyImageFile.LastIndexOf("_",StringComparison.CurrentCulture)
+        );
+        string fullImagePath = "StoryPages/" + storyName + "/" +
+            this.storyImageFile;
+        Texture texture = Resources.Load<Texture>(fullImagePath);
+        float imageAspectRatio = (float)texture.width / (float)texture.height;
+        if (SceneDescription.orientation == Orientation.Landscape) {
+            if (imageAspectRatio > 2) {
+                this.displayMode = DisplayMode.LandscapeWide;
+            } else {
+                this.displayMode = DisplayMode.Landscape;
+            }
+    
+        } else if (SceneDescription.orientation == Orientation.Portrait) {
+            this.displayMode = DisplayMode.Portrait;
+        }
+        Logger.Log(this.storyImageFile);
+        Logger.Log("hello displayMode is " + this.displayMode.ToString());
     }
 
 }
