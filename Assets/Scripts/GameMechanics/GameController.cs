@@ -30,15 +30,21 @@ public class GameController : MonoBehaviour {
     public Button portraitBackButton;
 
     public Button startReadButton;
+
     public GameObject landscapePanel;
     public GameObject portraitPanel;
 
     // Objects for ROS connection.
+    public GameObject splashScreen;
     public Button connectButton;
     private RosManager ros;
 
     // Reference to SceneManager so we can load and manipulate story scenes.
     private StoryManager storyManager;
+
+    // Stores the scene descriptions for the current story.
+    private List<SceneDescription> storyPages;
+    private int currentPageNumber = 0; // 0-indexed, index into this.storyPages.
 
     void Awake()
     {
@@ -71,7 +77,15 @@ public class GameController : MonoBehaviour {
         this.portraitBackButton.interactable = true;
         this.portraitBackButton.onClick.AddListener(onBackButtonClick);
 
+        this.storyPages = new List<SceneDescription>();
+        this.storyPages.Add(new SceneDescription("the_hungry_toad_01.json"));
+
         this.storyManager = GetComponent<StoryManager>();
+
+        // TODO: Check if we are using ROS or not.
+        // Either launch the splash screen to connect to ROS, or go straight
+        // into the story selection process.
+
     }
 
     // Update() is called once per frame.
@@ -93,11 +107,6 @@ public class GameController : MonoBehaviour {
     }
 
     void switchToLandscapeMode() {
-		// Update references for nextButton and backButton.
-		// Hide the canvas group associated with portrait.
-		// Show the canvas group associated with landscape.
-		// Toggle screen orientation.
-
         this.portraitPanel.GetComponent<CanvasGroup>().interactable = false;
         this.portraitPanel.GetComponent<CanvasGroup>().alpha = 0;
         this.portraitPanel.SetActive(false);
@@ -106,11 +115,11 @@ public class GameController : MonoBehaviour {
 		this.landscapePanel.GetComponent<CanvasGroup>().alpha = 1;
         this.landscapePanel.SetActive(true);
 
+        // TODO: is this necessary?
         Screen.orientation = ScreenOrientation.Landscape;
     }
 
     void switchToPortraitMode() {
-
 		this.landscapePanel.GetComponent<CanvasGroup>().interactable = false;
 		this.landscapePanel.GetComponent<CanvasGroup>().alpha = 0;
         this.landscapePanel.SetActive(false);
@@ -125,19 +134,14 @@ public class GameController : MonoBehaviour {
     // All UI handlers.
     public void onNextButtonClick()
     {
+        Logger.Log("Next Button clicked.");
 
-        Debug.Log("Next Button clicked.");
-        SceneDescription d = new SceneDescription("the_hungry_toad_01.json");
-		this.storyManager.LoadScene(d);
-        Logger.Log(d.sceneObjects.Length);
-
-		//this.switchToPortraitMode();
-
+        this.storyManager.LoadPage(this.storyPages[this.currentPageNumber]);
 	}
 
     void onBackButtonClick()
     {
-        Debug.Log("Back Button clicked.");
+        Logger.Log("Back Button clicked.");
         this.switchToLandscapeMode();
         this.storyManager.ClearScene();
     }

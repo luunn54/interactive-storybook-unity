@@ -26,8 +26,12 @@ public class SceneObjectManipulator : MonoBehaviour
     void Start() {
         Logger.Log("started scene object manipulator");
         // TODO: add necessary components in a prefab.
-
+        this.clickUnityAction = new UnityAction(() => { });
         this.button.onClick.AddListener(this.clickUnityAction);
+    }
+
+    public void AddClickHandler(Action action) {
+        this.clickUnityAction += new UnityAction(action);
     }
 
     public Action Highlight(Color color) {

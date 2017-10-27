@@ -40,9 +40,13 @@ public class TinkerText : MonoBehaviour
     // TODO: Consider using MouseDown and MouseUp instead of Click?
     void Start() {
         // Initialize it to an empty action to avoid null reference exception.
-        this.clickUnityAction = new UnityAction(() => { });
+        this.clickUnityAction += () => { };
         this.textButton.GetComponent<Button>()
             .onClick.AddListener(this.clickUnityAction);
+    }
+
+    public int GetId() {
+        return this.id;
     }
 
     // StoryManager will call this to give TinkerText a chance to readjust the
@@ -65,12 +69,5 @@ public class TinkerText : MonoBehaviour
     public void AddClickHandler(Action action) {
         this.clickUnityAction += new UnityAction(action);
     }
-
-    // Test using lambda expressions.
-    private Action HelloWorld() {
-        return () => { Logger.Log("hello world action "); };
-    }
-
-
 
 }

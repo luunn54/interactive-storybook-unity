@@ -5,10 +5,14 @@
 
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using System;
 using System.Collections.Generic;
 
 public class StoryManager : MonoBehaviour {
+
+    // We may want to call methods on GameController or add to the task queue.
+    public GameController gameController;
 
 	public GameObject portraitGraphicsPanel;
     public GameObject portraitTextPanel;
@@ -60,6 +64,8 @@ public class StoryManager : MonoBehaviour {
     void Start() {
         Logger.Log("StoryManager start");
 
+        this.gameController = GetComponent<GameController>();
+
         this.SetDisplayMode(DisplayMode.Landscape);
         this.tinkerTexts = new List<GameObject>();
         this.stanzas = new List<GameObject>();
@@ -71,8 +77,10 @@ public class StoryManager : MonoBehaviour {
     // LoadScene is responsible for loading all resources and putting them in
     // place, and attaching callbacks to created GameObjects, where these
     // callbacks involve functions from SceneManipulatorAPI.
-    public void LoadScene(SceneDescription description) {
+    public void LoadPage(SceneDescription description) {
         Logger.Log(description.storyImageFile);
+        Logger.Log(description.displayMode);
+        Logger.Log(description.displayMode == DisplayMode.Landscape);
         this.loadImage(description.storyImageFile);
 
         // Load all words as TinkerText. Begin at beginning of a stanza.
@@ -87,9 +95,9 @@ public class StoryManager : MonoBehaviour {
         }
 
         // Load triggers.
-        //foreach (Trigger trigger in description.triggers) {
-        //    this.loadTrigger(trigger);
-        //}
+        foreach (Trigger trigger in description.triggers) {
+            this.loadTrigger(trigger);
+        }
 
     }
 
@@ -155,8 +163,6 @@ public class StoryManager : MonoBehaviour {
         preferredWidth = Math.Max(preferredWidth, this.MIN_TINKER_TEXT_WIDTH);
         newText.GetComponent<RectTransform>().sizeDelta =
                    new Vector2(preferredWidth, this.TEXT_HEIGHT);
-        //Logger.Log(word + " " + preferredWidth.ToString() +
-                   //" " + remainingStanzaWidth.ToString());
         if (preferredWidth > this.remainingStanzaWidth){
             // Add a new stanza.
             GameObject newStanza =
@@ -172,11 +178,11 @@ public class StoryManager : MonoBehaviour {
         // Set new TinkerText parent to be the stanza.
         // TODO: set TinkerText id based on the info from JSON SceneDescription.
         // Probably just set them in order or something.
-		newTinkerText.GetComponent<TinkerText>().Init(1, preferredWidth);
+        newTinkerText.GetComponent<TinkerText>()
+                     .Init(this.tinkerTexts.Count, preferredWidth);
 		newTinkerText.transform.SetParent(this.currentStanza.transform, false);
         this.remainingStanzaWidth -= preferredWidth;
         this.remainingStanzaWidth -= STANZA_SPACING;
-        //Logger.Log("remaining: " + remainingStanzaWidth.ToString());
         this.tinkerTexts.Add(newTinkerText);
     }
 
@@ -199,10 +205,49 @@ public class StoryManager : MonoBehaviour {
             new Vector2(pos.width * this.imageScaleFactor,
                         pos.height * this.imageScaleFactor)
         )();
-        // Test adding a click handler.
-        this.tinkerTexts[0].GetComponent<TinkerText>()
-            .AddClickHandler(manip.Highlight(Color.blue));
+        newObj.name = sceneObject.label;
+        this.sceneObjects[sceneObject.label] = newObj;
     }
+
+    // Sets up a trigger between TinkerTexts and SceneObjects.
+    private void loadTrigger(Trigger trigger) {
+        Logger.Log(trigger.sceneObjectLabel);
+        SceneObjectManipulator manip = 
+            this.sceneObjects[trigger.sceneObjectLabel]
+                .GetComponent<SceneObjectManipulator>();
+        TinkerText tinkerText = this.tinkerTexts[trigger.textId]
+                                    .GetComponent<TinkerText>();
+        Action action = new Action(() => {});
+        // TODO: move some of this logic into SceneObjectManipulator
+        // instead of in loadTrigger. Right now, the switch statements grow
+        // linearly with the number of action types and condition types.
+        switch (trigger.action.type) {
+            case ActionType.Highlight:
+                Logger.Log(trigger.action.args.color.ToString());
+                action = manip.Highlight(trigger.action.args.color);
+                break;
+            case ActionType.Move:
+                break;
+            case ActionType.ChangeSize:
+                break;
+            default:
+                Logger.LogError("Unknown trigger action: " +
+                                trigger.action.type.ToString());
+                break;
+        }
+        switch (trigger.condition.type) {
+            case ConditionType.Click:
+                Logger.Log(tinkerText.GetId());
+                Logger.Log(manip.gameObject.name);
+                tinkerText.AddClickHandler(action);
+                break;
+            default:
+                Logger.LogError("Unknown condition type: " +
+                                trigger.condition.type.ToString());
+                break;
+        }
+    }
+
 
     // Called by GameController when we should remove all elements we've added
     // to this page (usually in preparration for the creation of another page).

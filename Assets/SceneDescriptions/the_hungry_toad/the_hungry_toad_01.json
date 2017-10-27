@@ -1,5 +1,5 @@
 {
-  "displayMode": "landscape",
+  "displayModeString": "portrait",
   "storyImageFile": "the_hungry_toad_03",
   "text": "Toad was always hungry. He ate and ate and ate, but he always wanted more.",
   "audio": "hungry_toad_audio",
@@ -36,12 +36,18 @@
   "triggers": [
     {
       "textId": 0,
-      "sceneObjectName": "toad",
+      "sceneObjectLabel": "toad",
       "condition": {
-
+        "typeString": "click"
       },
       "action": {
-
+        "typeString": "highlight",
+        "args": {
+          "r": 255,
+          "g": 0,
+          "b": 255,
+          "alpha": 80
+        }
       }
     }
   ]

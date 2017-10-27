@@ -34,18 +34,42 @@ public struct SceneObject {
 }
 
 [Serializable]
+public enum ConditionType {
+    Click
+}
+
+[Serializable]
+public enum ActionType {
+    Move,
+    Highlight,
+    ChangeSize
+}
+
+// All possible arguments we'd want to be passed along with a trigger action.
+[Serializable]
+public struct ActionArgs
+{
+    public Color color;
+    public int alpha, r, g, b; // For colors, 0-255.
+    public int x, y; // For positions or sizing.
+}
+
+[Serializable]
 public struct TriggerAction {
-    
+    public ActionType type;
+    public string typeString;
+    public ActionArgs args;
 }
 
 [Serializable]
 public struct TriggerCondition {
-    
+    public ConditionType type;
+    public string typeString;
 }
 
 [Serializable]
 public struct Trigger {
-    public string textId;
+    public int textId;
     public string sceneObjectLabel;
     public TriggerCondition condition;
     public TriggerAction action;
@@ -56,8 +80,8 @@ public struct Trigger {
 // can be stored easily as JSON files and can be sent over the network.
 [Serializable]
 public class SceneDescription {
-    // TODO: use the enum.
-    public string displayMode;
+    public DisplayMode displayMode;
+    public string displayModeString; // Easier for deserialization.
 
     // E.g. // "the_hungry_toad_01".
     public string storyImageFile;
@@ -87,6 +111,40 @@ public class SceneDescription {
         string dataAsJson = File.ReadAllText("Assets/SceneDescriptions/" +
                                              storyName + "/" + jsonFile);
 		JsonUtility.FromJsonOverwrite(dataAsJson, this);
+
+        // Convert from strings to enums.
+        string dm = this.displayModeString.Substring(0, 1).ToUpper() +
+                             this.displayModeString.Substring(1);
+        this.displayMode = (DisplayMode)Enum.Parse(typeof(DisplayMode), dm);
+        for (int i = 0; i < this.triggers.Length; i++)
+        {
+            Trigger trigger = this.triggers[i];
+            string cType = trigger.condition.typeString
+                                  .Substring(0, 1).ToUpper() +
+                                  trigger.condition.typeString.Substring(1);
+            this.triggers[i].condition.type = (ConditionType)Enum.Parse(
+                typeof(ConditionType), cType);
+            string aType = trigger.action.typeString
+                                  .Substring(0, 1).ToUpper() +
+                                  trigger.action.typeString.Substring(1);
+            this.triggers[i].action.type = (ActionType)Enum.Parse(
+                typeof(ActionType), aType);
+            // Convert from RGB to Color if necessary.
+            if (this.triggers[i].action.type == ActionType.Highlight)
+            {
+                // If no alpha provided, assume it's 1.
+                float alpha = 1;
+                if (trigger.action.args.alpha > 0) {
+                    alpha = (float)trigger.action.args.alpha / 255;
+                }
+                this.triggers[i].action.args.color = new Color(
+                    (float)trigger.action.args.r / 255,
+                    (float)trigger.action.args.g / 255,
+                    (float)trigger.action.args.b / 255,
+                    alpha
+                );
+            }
+        }
     }
 
 }
