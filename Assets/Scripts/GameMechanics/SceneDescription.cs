@@ -40,8 +40,8 @@ public enum ConditionType {
 
 [Serializable]
 public enum ActionType {
-    Move,
     Highlight,
+    Move,
     ChangeSize
 }
 
@@ -113,22 +113,28 @@ public class SceneDescription {
 		JsonUtility.FromJsonOverwrite(dataAsJson, this);
 
         // Convert from strings to enums.
-        string dm = this.displayModeString.Substring(0, 1).ToUpper() +
-                             this.displayModeString.Substring(1);
-        this.displayMode = (DisplayMode)Enum.Parse(typeof(DisplayMode), dm);
+        if (this.displayModeString != null) {
+            string dm = this.displayModeString.Substring(0, 1).ToUpper() +
+                                 this.displayModeString.Substring(1);
+            this.displayMode = (DisplayMode)Enum.Parse(typeof(DisplayMode), dm);
+        }
         for (int i = 0; i < this.triggers.Length; i++)
         {
             Trigger trigger = this.triggers[i];
-            string cType = trigger.condition.typeString
-                                  .Substring(0, 1).ToUpper() +
-                                  trigger.condition.typeString.Substring(1);
-            this.triggers[i].condition.type = (ConditionType)Enum.Parse(
-                typeof(ConditionType), cType);
-            string aType = trigger.action.typeString
+            if (trigger.condition.typeString != null) {
+                string cType = trigger.condition.typeString
+                                      .Substring(0, 1).ToUpper() +
+                                      trigger.condition.typeString.Substring(1);
+                this.triggers[i].condition.type = (ConditionType)Enum.Parse(
+                    typeof(ConditionType), cType);
+            }
+            if (trigger.action.typeString != null) {
+                string aType = trigger.action.typeString
                                   .Substring(0, 1).ToUpper() +
                                   trigger.action.typeString.Substring(1);
-            this.triggers[i].action.type = (ActionType)Enum.Parse(
-                typeof(ActionType), aType);
+                this.triggers[i].action.type = (ActionType)Enum.Parse(
+                    typeof(ActionType), aType);
+            }
             // Convert from RGB to Color if necessary.
             if (this.triggers[i].action.type == ActionType.Highlight)
             {

@@ -11,6 +11,7 @@
 // GameController is a singleton.
 
 using System;
+using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -43,6 +44,7 @@ public class GameController : MonoBehaviour {
     private StoryManager storyManager;
 
     // Stores the scene descriptions for the current story.
+    private string storyName;
     private List<SceneDescription> storyPages;
     private int currentPageNumber = 0; // 0-indexed, index into this.storyPages.
 
@@ -78,13 +80,14 @@ public class GameController : MonoBehaviour {
         this.portraitBackButton.onClick.AddListener(onBackButtonClick);
 
         this.storyPages = new List<SceneDescription>();
-        this.storyPages.Add(new SceneDescription("the_hungry_toad_01.json"));
+        this.storyPages.Add(new SceneDescription("the_hungry_toad_02.json"));
 
         this.storyManager = GetComponent<StoryManager>();
 
         // TODO: Check if we are using ROS or not.
         // Either launch the splash screen to connect to ROS, or go straight
         // into the story selection process.
+        this.selectStory("the_hungry_toad");
 
     }
 
@@ -106,7 +109,19 @@ public class GameController : MonoBehaviour {
         // This should probably happen in StoryManager and not GameController.
     }
 
-    void switchToLandscapeMode() {
+    private void selectStory(string story) {
+        this.storyName = story;
+        DirectoryInfo dir = new DirectoryInfo(Application.dataPath + "/SceneDescriptions/" + story);
+        FileInfo[] files = dir.GetFiles("*.json");
+        // Sort to ensure pages are in order.
+        Array.Sort(files, (f1, f2) => string.Compare(f1.Name, f2.Name));
+        this.storyPages.Clear();
+        foreach (FileInfo file in files) {
+            this.storyPages.Add(new SceneDescription(file.Name));          
+        }
+    }
+
+    private void switchToLandscapeMode() {
         this.portraitPanel.GetComponent<CanvasGroup>().interactable = false;
         this.portraitPanel.GetComponent<CanvasGroup>().alpha = 0;
         this.portraitPanel.SetActive(false);
@@ -119,7 +134,7 @@ public class GameController : MonoBehaviour {
         Screen.orientation = ScreenOrientation.Landscape;
     }
 
-    void switchToPortraitMode() {
+    private void switchToPortraitMode() {
 		this.landscapePanel.GetComponent<CanvasGroup>().interactable = false;
 		this.landscapePanel.GetComponent<CanvasGroup>().alpha = 0;
         this.landscapePanel.SetActive(false);
@@ -132,21 +147,21 @@ public class GameController : MonoBehaviour {
     }
 
     // All UI handlers.
-    public void onNextButtonClick()
+    private void onNextButtonClick()
     {
         Logger.Log("Next Button clicked.");
 
         this.storyManager.LoadPage(this.storyPages[this.currentPageNumber]);
 	}
 
-    void onBackButtonClick()
+    private void onBackButtonClick()
     {
         Logger.Log("Back Button clicked.");
         this.switchToLandscapeMode();
         this.storyManager.ClearScene();
     }
 
-    void onStartRead()
+    private void onStartRead()
     {
 
     }

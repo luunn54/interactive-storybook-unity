@@ -1,0 +1,32 @@
+{
+  "sceneObjects": [
+    {
+      "position": {
+        "width": 280,
+        "top": 84,
+        "height": 182,
+        "left": 17
+      },
+      "label": "toad"
+    }
+  ],
+  "text": "Toad liked to eat.",
+  "storyImageFile": "the_hungry_toad_02",
+  "displayMode": 0,
+  "triggers": [
+    {
+      "textId": 0,
+      "action": {
+        "args": {
+          "b": 255,
+          "g": 255,
+          "r": 0,
+          "alpha": 60
+        },
+        "type": 0
+      },
+      "sceneObjectLabel": "toad",
+      "condition": { "type": 0 }
+    }
+  ]
+}
