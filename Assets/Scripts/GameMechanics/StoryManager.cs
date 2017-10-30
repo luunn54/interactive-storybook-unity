@@ -247,7 +247,7 @@ public class StoryManager : MonoBehaviour {
 
     // Called by GameController when we should remove all elements we've added
     // to this page (usually in preparration for the creation of another page).
-    public void ClearScene() {
+    public void ClearPage() {
         // Destroy stanzas.
         foreach (GameObject stanza in this.stanzas) {
             Destroy(stanza);

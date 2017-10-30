@@ -80,7 +80,7 @@ public struct Trigger {
 // can be stored easily as JSON files and can be sent over the network.
 [Serializable]
 public class SceneDescription {
-    private static Orientation orientation; // To be set by GameController.
+    private static ScreenOrientation orientation; // To be set by GameController.
 
     public DisplayMode displayMode;
     public string displayModeString; // Easier for deserialization.
@@ -105,7 +105,7 @@ public class SceneDescription {
         this.loadFromJSON(jsonFile);
     }
 
-    public static void SetOrientation(Orientation o) {
+    public static void SetOrientation(ScreenOrientation o) {
         SceneDescription.orientation = o;
     }
 
@@ -165,14 +165,14 @@ public class SceneDescription {
             this.storyImageFile;
         Texture texture = Resources.Load<Texture>(fullImagePath);
         float imageAspectRatio = (float)texture.width / (float)texture.height;
-        if (SceneDescription.orientation == Orientation.Landscape) {
+        if (SceneDescription.orientation == ScreenOrientation.Landscape) {
             if (imageAspectRatio > 2) {
                 this.displayMode = DisplayMode.LandscapeWide;
             } else {
                 this.displayMode = DisplayMode.Landscape;
             }
     
-        } else if (SceneDescription.orientation == Orientation.Portrait) {
+        } else if (SceneDescription.orientation == ScreenOrientation.Portrait) {
             this.displayMode = DisplayMode.Portrait;
         }
         Logger.Log(this.storyImageFile);

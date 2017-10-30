@@ -27,8 +27,14 @@ public class GameController : MonoBehaviour {
     // UI GameObjects. Make public so that they can be attached in Unity.
     public Button landscapeNextButton;
     public Button landscapeBackButton;
+    public Button landscapeFinishButton;
     public Button portraitNextButton;
     public Button portraitBackButton;
+    public Button portraitFinishButton;
+
+    private Button nextButton;
+    private Button backButton;
+    private Button finishButton;
 
     public Button startReadButton;
 
@@ -48,7 +54,7 @@ public class GameController : MonoBehaviour {
     private List<SceneDescription> storyPages;
     private int currentPageNumber = 0; // 0-indexed, index into this.storyPages.
     // Orientations of each story. TODO: read from file, for now just hardcode.
-    private Dictionary<string, Orientation> orientations;
+    private Dictionary<string, ScreenOrientation> orientations;
 
     void Awake()
     {
@@ -67,7 +73,6 @@ public class GameController : MonoBehaviour {
 
     void Start()
     {
-        // Start the ROS message watcher.
         // Set up all UI elements. (SetActive, GetComponent, etc.)
         // Get references to objects if necessary.
         Logger.Log("Game Controller start");
@@ -81,8 +86,13 @@ public class GameController : MonoBehaviour {
         this.portraitBackButton.interactable = true;
         this.portraitBackButton.onClick.AddListener(onBackButtonClick);
 
+        this.landscapeFinishButton.interactable = true;
+        this.landscapeFinishButton.onClick.AddListener(onFinishButtonClick);
+        this.portraitFinishButton.interactable = true;
+        this.portraitFinishButton.onClick.AddListener(onFinishButtonClick);
+
         this.storyPages = new List<SceneDescription>();
-        this.orientations = new Dictionary<string, Orientation>();
+        this.orientations = new Dictionary<string, ScreenOrientation>();
 
         this.storyManager = GetComponent<StoryManager>();
 
@@ -91,8 +101,9 @@ public class GameController : MonoBehaviour {
         // into the story selection process.
 
         // Set up the orientations.
-        this.orientations["the_hungry_toad"] = Orientation.Landscape;
-        this.orientations["possum_and_the_peeper"] = Orientation.Landscape;
+        // TODO: read in a file here instead.
+        this.orientations["the_hungry_toad"] = ScreenOrientation.Landscape;
+        this.orientations["possum_and_the_peeper"] = ScreenOrientation.Landscape;
 
         this.selectStory("the_hungry_toad");
 
@@ -130,9 +141,40 @@ public class GameController : MonoBehaviour {
         foreach (FileInfo file in files) {
             this.storyPages.Add(new SceneDescription(file.Name));          
         }
+
+        this.setOrientation(this.orientations[this.storyName]);
+        this.changeButtonText(this.nextButton, "Begin Story!");
+        this.hideElement(this.backButton.gameObject);
+        this.storyManager.LoadPage(this.storyPages[this.currentPageNumber]);
     }
 
-    private void switchToLandscapeMode() {
+    private void changeButtonText(Button button, string text) {
+        button.GetComponentInChildren<Text>().text = text;
+    }
+
+    private void showElement(GameObject go) {
+        go.SetActive(true);
+    }
+
+    private void hideElement(GameObject go) {
+        go.SetActive(false);
+    }
+
+    private void setOrientation(ScreenOrientation orientation) {
+        switch (orientation) {
+            case ScreenOrientation.Landscape:
+                this.setLandscapeOrientation();
+                break;
+            case ScreenOrientation.Portrait:
+                this.setPortraitOrientation();
+                break;
+            default:
+                Logger.LogError("No orientation: " + orientation.ToString());
+                break;
+        }
+    }
+
+    private void setLandscapeOrientation() {
         this.portraitPanel.GetComponent<CanvasGroup>().interactable = false;
         this.portraitPanel.GetComponent<CanvasGroup>().alpha = 0;
         this.portraitPanel.SetActive(false);
@@ -141,11 +183,15 @@ public class GameController : MonoBehaviour {
 		this.landscapePanel.GetComponent<CanvasGroup>().alpha = 1;
         this.landscapePanel.SetActive(true);
 
+        this.nextButton = this.landscapeNextButton;
+        this.backButton = this.landscapeBackButton;
+        this.finishButton = this.landscapeFinishButton;
+
         // TODO: is this necessary?
         Screen.orientation = ScreenOrientation.Landscape;
     }
 
-    private void switchToPortraitMode() {
+    private void setPortraitOrientation() {
 		this.landscapePanel.GetComponent<CanvasGroup>().interactable = false;
 		this.landscapePanel.GetComponent<CanvasGroup>().alpha = 0;
         this.landscapePanel.SetActive(false);
@@ -154,27 +200,51 @@ public class GameController : MonoBehaviour {
 		this.portraitPanel.GetComponent<CanvasGroup>().alpha = 1;
         this.portraitPanel.SetActive(true);
 
+        this.nextButton = this.portraitNextButton;
+        this.backButton = this.portraitBackButton;
+        this.finishButton = this.portraitFinishButton;
         Screen.orientation = ScreenOrientation.Portrait;
     }
 
     // All UI handlers.
-    private void onNextButtonClick()
-    {
+    private void onNextButtonClick() {
         Logger.Log("Next Button clicked.");
-
+        if (this.currentPageNumber == 0) {
+            // Special case, need to change the text and show the back button.
+            this.changeButtonText(this.nextButton, "Next Page");
+            this.showElement(this.backButton.gameObject);
+        }
+        if (this.currentPageNumber == this.storyPages.Count - 2) {
+            this.hideElement(this.nextButton.gameObject);
+            this.showElement(this.finishButton.gameObject);
+        }
+        this.currentPageNumber += 1;
+        this.storyManager.ClearPage();
         this.storyManager.LoadPage(this.storyPages[this.currentPageNumber]);
 	}
+
+    private void onFinishButtonClick() {
+        
+    }
 
     private void onBackButtonClick()
     {
         Logger.Log("Back Button clicked.");
-        this.switchToLandscapeMode();
-        this.storyManager.ClearScene();
+        this.currentPageNumber -= 1;
+        this.storyManager.ClearPage();
+        this.storyManager.LoadPage(this.storyPages[this.currentPageNumber]);
     }
 
-    private void onStartRead()
-    {
+    private void onStartReadClicked() {
+        // Tell story manager to begin playing the audio on this page,
+        // and story manager is responsible for telling the tinker texts
+        // to light up at the correct time.
+    }
 
+    private void onStopReadClicked() {
+        // Can be caused by a ROS message if the robot wants to do something,
+        // or can be because the child clicked something that we have set up
+        // to stop the reading.
     }
 
     // All ROS message handlers.
