@@ -224,14 +224,14 @@ public class StoryManager : MonoBehaviour {
 
     // Adds a SceneObject to the story scene.
     private void loadSceneObject(SceneObject sceneObject) {
+        // TODO: handle multiple objects per label. For now, only allow one.
+        if (this.sceneObjects.ContainsKey(sceneObject.label)) {
+            return;
+        }
         GameObject newObj = 
             Instantiate((GameObject)Resources.Load("Prefabs/SceneObject"));
         newObj.transform.SetParent(this.graphicsPanel.transform, false);
         newObj.GetComponent<RectTransform>().SetAsLastSibling();
-        // TODO: handle multiple objects per label. For now, only allow one.
-        if (this.sceneObjects.ContainsKey(sceneObject.label)) { 
-            this.sceneObjects[sceneObject.label] = newObj;
-        }
         // Set the position.
         SceneObjectManipulator manip =
             newObj.GetComponent<SceneObjectManipulator>();
