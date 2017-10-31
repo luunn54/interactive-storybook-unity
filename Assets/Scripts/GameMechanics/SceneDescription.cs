@@ -80,16 +80,21 @@ public struct Trigger {
 // can be stored easily as JSON files and can be sent over the network.
 [Serializable]
 public class SceneDescription {
-    private static ScreenOrientation orientation; // To be set by GameController.
+    private static ScreenOrientation orientation;
 
     public DisplayMode displayMode;
-    public string displayModeString; // Easier for deserialization.
+    public string displayModeString; // Easier for deserialization maybe.
+
+    public bool isTitle;
 
     // E.g. // "the_hungry_toad_01".
     public string storyImageFile;
 
     // All of the text. StoryManager will create TinkerText.
     public string text;
+
+    // E.g. "the_hungry_toad_2".
+    public string audioFile;
 
     // List of scene objects to place.
     public SceneObject[] sceneObjects;
@@ -105,6 +110,7 @@ public class SceneDescription {
         this.loadFromJSON(jsonFile);
     }
 
+    // To be called by GameController. We need to this to determine displayMode.
     public static void SetOrientation(ScreenOrientation o) {
         SceneDescription.orientation = o;
     }
@@ -166,6 +172,7 @@ public class SceneDescription {
         Texture texture = Resources.Load<Texture>(fullImagePath);
         float imageAspectRatio = (float)texture.width / (float)texture.height;
         if (SceneDescription.orientation == ScreenOrientation.Landscape) {
+            // TODO: pick a reasonable constant (maybe 2) and give it a name.
             if (imageAspectRatio > 2) {
                 this.displayMode = DisplayMode.LandscapeWide;
             } else {

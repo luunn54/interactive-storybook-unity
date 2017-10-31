@@ -137,11 +137,10 @@ public class GameController : MonoBehaviour {
         Array.Sort(files, (f1, f2) => string.Compare(f1.Name, f2.Name));
         this.storyPages.Clear();
         // Figure out the orientation of this story and tell SceneDescription.
-        SceneDescription.SetOrientation(this.orientations[storyName]);
+        SceneDescription.SetOrientation(this.orientations[this.storyName]);
         foreach (FileInfo file in files) {
             this.storyPages.Add(new SceneDescription(file.Name));          
         }
-
         this.setOrientation(this.orientations[this.storyName]);
         this.changeButtonText(this.nextButton, "Begin Story!");
         this.hideElement(this.backButton.gameObject);

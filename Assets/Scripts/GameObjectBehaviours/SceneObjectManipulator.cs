@@ -45,6 +45,7 @@ public class SceneObjectManipulator : MonoBehaviour
         {
             gameObject.GetComponent<Image>().color = color;
             Logger.Log("Highlight: " + color.ToString());
+            // After some amount of time, remove highlighting.
         };
     }
 

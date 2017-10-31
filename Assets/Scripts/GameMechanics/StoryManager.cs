@@ -16,15 +16,18 @@ public class StoryManager : MonoBehaviour {
 
 	public GameObject portraitGraphicsPanel;
     public GameObject portraitTextPanel;
-
     public GameObject landscapeGraphicsPanel;
     public GameObject landscapeTextPanel;
 	public GameObject landscapeWideGraphicsPanel;
 	public GameObject landscapeWideTextPanel;
 
+    public GameObject portraitTitlePanel;
+    public GameObject landscapeTitlePanel;
+
     // Used for internal references.
     private GameObject graphicsPanel;
     private GameObject textPanel;
+    private GameObject titlePanel;
     private GameObject currentStanza;
 
     private float graphicsPanelWidth;
@@ -78,9 +81,15 @@ public class StoryManager : MonoBehaviour {
     // place, and attaching callbacks to created GameObjects, where these
     // callbacks involve functions from SceneManipulatorAPI.
     public void LoadPage(SceneDescription description) {
-
         this.setDisplayMode(description.displayMode);
 
+        // Special case for title page.
+        if (description.isTitle) {
+            this.loadTitlePage(description);
+            return;
+        }
+
+        // Load image.
         this.loadImage(description.storyImageFile);
 
         // Load all words as TinkerText. Begin at beginning of a stanza.
@@ -88,6 +97,11 @@ public class StoryManager : MonoBehaviour {
         foreach (string word in description.text.Split(' ')) {
             this.loadTinkerText(word);
         }
+
+        // TODO: figure out how to load audio. WHat object to attach it to?
+        // Its own invisible object? How to set up the triggering of words?
+        // Give it timestamps and while playing whenever it passes those
+        // timestamps it knows what triggers to make.
 
         // Load all scene objects.
         foreach (SceneObject sceneObject in description.sceneObjects) {
@@ -99,6 +113,32 @@ public class StoryManager : MonoBehaviour {
             this.loadTrigger(trigger);
         }
 
+    }
+
+    private void loadTitlePage(SceneDescription description) {
+        // Load the into the title panel without worrying about anything except
+        // for fitting the space and making the aspect ratio correct.
+        // Basically the same as first half of loadImage() function.
+        string imageFile = description.storyImageFile;
+        string storyName = imageFile.Substring(0,
+            imageFile.LastIndexOf("_", StringComparison.CurrentCulture)
+        );
+        GameObject newObj = new GameObject();
+        newObj.AddComponent<Image>();
+        newObj.AddComponent<AspectRatioFitter>();
+        newObj.transform.SetParent(this.titlePanel.transform, false);
+        newObj.transform.localPosition = Vector3.zero;
+        newObj.GetComponent<AspectRatioFitter>().aspectMode =
+                  AspectRatioFitter.AspectMode.FitInParent;
+        newObj.GetComponent<AspectRatioFitter>().aspectRatio =
+                  this.graphicsPanelAspectRatio;
+        string fullImagePath = "StoryPages/" + storyName + "/" + imageFile;
+        Sprite sprite = Resources.Load<Sprite>(fullImagePath);
+        newObj.GetComponent<Image>().sprite = sprite;
+        newObj.GetComponent<Image>().preserveAspect = true;
+        this.storyImage = newObj;
+
+        // TODO: load the audio.
     }
 
     // Argument imageFile should be something like "the_hungry_toad_01" and then
@@ -188,7 +228,10 @@ public class StoryManager : MonoBehaviour {
             Instantiate((GameObject)Resources.Load("Prefabs/SceneObject"));
         newObj.transform.SetParent(this.graphicsPanel.transform, false);
         newObj.GetComponent<RectTransform>().SetAsLastSibling();
-        this.sceneObjects[sceneObject.label] = newObj;
+        // TODO: handle multiple objects per label. For now, only allow one.
+        if (this.sceneObjects.ContainsKey(sceneObject.label)) { 
+            this.sceneObjects[sceneObject.label] = newObj;
+        }
         // Set the position.
         SceneObjectManipulator manip =
             newObj.GetComponent<SceneObjectManipulator>();
@@ -278,14 +321,17 @@ public class StoryManager : MonoBehaviour {
                 case DisplayMode.Landscape:
                     this.graphicsPanel = this.landscapeGraphicsPanel;
                     this.textPanel = this.landscapeTextPanel;
+                    this.titlePanel = this.landscapeTitlePanel;
                     break;
                 case DisplayMode.LandscapeWide:
                     this.graphicsPanel = this.landscapeWideGraphicsPanel;
                     this.textPanel = this.landscapeWideTextPanel;
+                    this.titlePanel = this.landscapeTitlePanel;
                     break;
                 case DisplayMode.Portrait:
                     this.graphicsPanel = this.portraitGraphicsPanel;
                     this.textPanel = this.portraitTextPanel;
+                    this.titlePanel = this.portraitTitlePanel;
                     break;
                 default:
                     Logger.LogError("unknown display mode " + newMode);
