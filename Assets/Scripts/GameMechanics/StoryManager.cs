@@ -236,7 +236,8 @@ public class StoryManager : MonoBehaviour {
         SceneObjectManipulator manip =
             newObj.GetComponent<SceneObjectManipulator>();
         Position pos = sceneObject.position;
-        manip.Move(
+        manip.label = sceneObject.label;
+        manip.MoveToPosition(
             new Vector3(this.storyImageX + pos.left * this.imageScaleFactor,
                         this.storyImageY - pos.top * this.imageScaleFactor)
         )();
@@ -244,6 +245,12 @@ public class StoryManager : MonoBehaviour {
             new Vector2(pos.width * this.imageScaleFactor,
                         pos.height * this.imageScaleFactor)
         )();
+        // Add a dummy handler to check things.
+        manip.AddClickHandler(() =>
+        {
+            Logger.Log("SceneObject clicked " +
+                       manip.label);
+        });
         newObj.name = sceneObject.label;
         this.sceneObjects[sceneObject.label] = newObj;
     }
@@ -265,7 +272,7 @@ public class StoryManager : MonoBehaviour {
                 Logger.Log(trigger.action.args.color.ToString());
                 action = manip.Highlight(trigger.action.args.color);
                 break;
-            case ActionType.Move:
+            case ActionType.MoveToPosition:
                 break;
             case ActionType.ChangeSize:
                 break;

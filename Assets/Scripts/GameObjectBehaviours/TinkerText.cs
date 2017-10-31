@@ -39,7 +39,8 @@ public class TinkerText : MonoBehaviour
     // Set up click handler.
     // TODO: Consider using MouseDown and MouseUp instead of Click?
     void Start() {
-        // Initialize it to an empty action to avoid null reference exception.
+        // It's important to do += here and not = for clickUnityAction.
+        // Need to initialize otherwise will get NullReferenceException.
         this.clickUnityAction += () => { };
         this.textButton.GetComponent<Button>()
             .onClick.AddListener(this.clickUnityAction);

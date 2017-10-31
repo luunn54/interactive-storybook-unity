@@ -51,6 +51,7 @@ public class GameController : MonoBehaviour {
 
     // Stores the scene descriptions for the current story.
     private string storyName;
+    private ScreenOrientation orientation;
     private List<SceneDescription> storyPages;
     private int currentPageNumber = 0; // 0-indexed, index into this.storyPages.
     // Orientations of each story. TODO: read from file, for now just hardcode.
@@ -137,11 +138,12 @@ public class GameController : MonoBehaviour {
         Array.Sort(files, (f1, f2) => string.Compare(f1.Name, f2.Name));
         this.storyPages.Clear();
         // Figure out the orientation of this story and tell SceneDescription.
-        SceneDescription.SetOrientation(this.orientations[this.storyName]);
+        this.setOrientation(this.orientations[this.storyName]);
+        SceneDescription.SetOrientation(this.orientation);
         foreach (FileInfo file in files) {
             this.storyPages.Add(new SceneDescription(file.Name));          
         }
-        this.setOrientation(this.orientations[this.storyName]);
+        this.setOrientation(this.orientation);
         this.changeButtonText(this.nextButton, "Begin Story!");
         this.hideElement(this.backButton.gameObject);
         this.storyManager.LoadPage(this.storyPages[this.currentPageNumber]);
@@ -159,8 +161,9 @@ public class GameController : MonoBehaviour {
         go.SetActive(false);
     }
 
-    private void setOrientation(ScreenOrientation orientation) {
-        switch (orientation) {
+    private void setOrientation(ScreenOrientation o) {
+        this.orientation = o;
+        switch (o) {
             case ScreenOrientation.Landscape:
                 this.setLandscapeOrientation();
                 break;
@@ -168,18 +171,19 @@ public class GameController : MonoBehaviour {
                 this.setPortraitOrientation();
                 break;
             default:
-                Logger.LogError("No orientation: " + orientation.ToString());
+                Logger.LogError("No orientation: " + o.ToString());
                 break;
         }
     }
 
     private void setLandscapeOrientation() {
-        this.portraitPanel.GetComponent<CanvasGroup>().interactable = false;
-        this.portraitPanel.GetComponent<CanvasGroup>().alpha = 0;
+        Logger.Log("Changing to Landscape orientation");
+        //this.portraitPanel.GetComponent<CanvasGroup>().interactable = false;
+        //this.portraitPanel.GetComponent<CanvasGroup>().alpha = 0;
         this.portraitPanel.SetActive(false);
 
-		this.landscapePanel.GetComponent<CanvasGroup>().interactable = true;
-		this.landscapePanel.GetComponent<CanvasGroup>().alpha = 1;
+		//this.landscapePanel.GetComponent<CanvasGroup>().interactable = true;
+		//this.landscapePanel.GetComponent<CanvasGroup>().alpha = 1;
         this.landscapePanel.SetActive(true);
 
         this.nextButton = this.landscapeNextButton;
@@ -191,12 +195,13 @@ public class GameController : MonoBehaviour {
     }
 
     private void setPortraitOrientation() {
-		this.landscapePanel.GetComponent<CanvasGroup>().interactable = false;
-		this.landscapePanel.GetComponent<CanvasGroup>().alpha = 0;
+        Logger.Log("Changing to Portrait orientation");
+		//this.landscapePanel.GetComponent<CanvasGroup>().interactable = false;
+		//this.landscapePanel.GetComponent<CanvasGroup>().alpha = 0;
         this.landscapePanel.SetActive(false);
 
-		this.portraitPanel.GetComponent<CanvasGroup>().interactable = true;
-		this.portraitPanel.GetComponent<CanvasGroup>().alpha = 1;
+		//this.portraitPanel.GetComponent<CanvasGroup>().interactable = true;
+		//this.portraitPanel.GetComponent<CanvasGroup>().alpha = 1;
         this.portraitPanel.SetActive(true);
 
         this.nextButton = this.portraitNextButton;

@@ -19,6 +19,7 @@ public class SceneObjectManipulator : MonoBehaviour
     public Button button;
     public Image image;
     public RectTransform rectTransform;
+    public string label { get; set; }
 
     // TODO: add the concept of variables, so that variables can be
     // saved between scenes. This also implies that we should not Destroy
@@ -31,10 +32,16 @@ public class SceneObjectManipulator : MonoBehaviour
 
     void Start() {
         Logger.Log("started scene object manipulator");
-        // TODO: add necessary components in a prefab.
-        this.clickUnityAction = new UnityAction(() => { });
+        // TODO: add audio and animation to the prefab, then include them.
+
+        // It's important to do += here and not = for clickUnityAction.
+        this.clickUnityAction += () => { };
         this.button.onClick.AddListener(this.clickUnityAction);
     }
+
+    //private async Task Delay(int milliseconds) {
+        
+    //}
 
     public void AddClickHandler(Action action) {
         this.clickUnityAction += new UnityAction(action);
@@ -46,10 +53,11 @@ public class SceneObjectManipulator : MonoBehaviour
             gameObject.GetComponent<Image>().color = color;
             Logger.Log("Highlight: " + color.ToString());
             // After some amount of time, remove highlighting.
+
         };
     }
 
-    public Action Move(Vector3 localPosition) {
+    public Action MoveToPosition(Vector3 localPosition) {
         return () =>
         {
             this.rectTransform.localPosition = localPosition;

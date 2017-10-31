@@ -41,7 +41,7 @@ public enum ConditionType {
 [Serializable]
 public enum ActionType {
     Highlight,
-    Move,
+    MoveToPosition,
     ChangeSize
 }
 
