@@ -39,10 +39,6 @@ public class SceneObjectManipulator : MonoBehaviour
         this.button.onClick.AddListener(this.clickUnityAction);
     }
 
-    //private async Task Delay(int milliseconds) {
-        
-    //}
-
     public void AddClickHandler(Action action) {
         this.clickUnityAction += new UnityAction(action);
     }
