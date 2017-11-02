@@ -2,9 +2,8 @@
 -target:library
 -nowarn:0169
 -langversion:4
--out:'Temp/Assembly-CSharp.dll'
+-out:'Temp/Assembly-CSharp-firstpass.dll'
 -unsafe
--r:'Library/ScriptAssemblies/Assembly-CSharp-firstpass.dll'
 -r:'/Applications/Unity/Unity.app/Contents/Managed/UnityEditor.dll'
 -r:'/Applications/Unity/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll'
 -r:'/Applications/Unity/Unity.app/Contents/Managed/UnityEngine/UnityEngine.CoreModule.dll'
@@ -73,7 +72,6 @@
 -define:UNITY_2017
 -define:PLATFORM_ARCH_64
 -define:UNITY_64
--define:UNITY_ANALYTICS
 -define:ENABLE_AUDIO
 -define:ENABLE_CACHING
 -define:ENABLE_CLOTH
@@ -157,17 +155,7 @@
 -define:ENABLE_NATIVE_ARRAY_CHECKS
 -define:UNITY_TEAM_LICENSE
 -define:ENABLE_VSTU
-'Assets/Scripts/GameMechanics/GameController.cs'
-'Assets/Scripts/GameMechanics/SceneDescription.cs'
-'Assets/Scripts/GameMechanics/StoryManager.cs'
-'Assets/Scripts/GameObjectBehaviours/SceneManipulatorAPI.cs'
-'Assets/Scripts/GameObjectBehaviours/SceneObjectManipulator.cs'
-'Assets/Scripts/GameObjectBehaviours/TinkerText.cs'
-'Assets/Scripts/Ros/RosbridgeUtilities.cs'
-'Assets/Scripts/Ros/RosbridgeWebSocketClient.cs'
-'Assets/Scripts/Ros/RosManager.cs'
-'Assets/Scripts/Util/Constants.cs'
-'Assets/Scripts/Util/Logger.cs'
+'Assets/Plugins/MiniJSON.cs'
 -r:'/Applications/Unity/Unity.app/Contents/Mono/lib/mono/unity/System.Runtime.Serialization.dll'
 -r:'/Applications/Unity/Unity.app/Contents/Mono/lib/mono/unity/System.Xml.Linq.dll'
 -r:'/Applications/Unity/Unity.app/Contents/Mono/lib/mono/unity/UnityScript.dll'

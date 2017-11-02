@@ -178,12 +178,7 @@ public class GameController : MonoBehaviour {
 
     private void setLandscapeOrientation() {
         Logger.Log("Changing to Landscape orientation");
-        //this.portraitPanel.GetComponent<CanvasGroup>().interactable = false;
-        //this.portraitPanel.GetComponent<CanvasGroup>().alpha = 0;
         this.portraitPanel.SetActive(false);
-
-		//this.landscapePanel.GetComponent<CanvasGroup>().interactable = true;
-		//this.landscapePanel.GetComponent<CanvasGroup>().alpha = 1;
         this.landscapePanel.SetActive(true);
 
         this.nextButton = this.landscapeNextButton;
@@ -196,12 +191,7 @@ public class GameController : MonoBehaviour {
 
     private void setPortraitOrientation() {
         Logger.Log("Changing to Portrait orientation");
-		//this.landscapePanel.GetComponent<CanvasGroup>().interactable = false;
-		//this.landscapePanel.GetComponent<CanvasGroup>().alpha = 0;
         this.landscapePanel.SetActive(false);
-
-		//this.portraitPanel.GetComponent<CanvasGroup>().interactable = true;
-		//this.portraitPanel.GetComponent<CanvasGroup>().alpha = 1;
         this.portraitPanel.SetActive(true);
 
         this.nextButton = this.portraitNextButton;
@@ -213,30 +203,33 @@ public class GameController : MonoBehaviour {
     // All UI handlers.
     private void onNextButtonClick() {
         Logger.Log("Next Button clicked.");
-        if (this.currentPageNumber == 0) {
+        this.currentPageNumber += 1;
+        this.storyManager.ClearPage();
+        this.storyManager.LoadPage(this.storyPages[this.currentPageNumber]);
+        if (this.currentPageNumber == 1) {
             // Special case, need to change the text and show the back button.
             this.changeButtonText(this.nextButton, "Next Page");
             this.showElement(this.backButton.gameObject);
         }
-        if (this.currentPageNumber == this.storyPages.Count - 2) {
+        if (this.currentPageNumber == this.storyPages.Count - 1) {
             this.hideElement(this.nextButton.gameObject);
             this.showElement(this.finishButton.gameObject);
         }
-        this.currentPageNumber += 1;
-        this.storyManager.ClearPage();
-        this.storyManager.LoadPage(this.storyPages[this.currentPageNumber]);
 	}
 
     private void onFinishButtonClick() {
         
     }
 
-    private void onBackButtonClick()
-    {
+    private void onBackButtonClick() {
         Logger.Log("Back Button clicked.");
         this.currentPageNumber -= 1;
         this.storyManager.ClearPage();
         this.storyManager.LoadPage(this.storyPages[this.currentPageNumber]);
+        if (this.currentPageNumber == 0) {
+            // Hide the back button because we're at the beginning.
+            this.hideElement(this.backButton.gameObject);
+        }
     }
 
     private void onStartReadClicked() {

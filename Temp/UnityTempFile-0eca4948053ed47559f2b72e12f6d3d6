@@ -161,6 +161,7 @@
 'Assets/Scripts/GameMechanics/StoryManager.cs'
 'Assets/Scripts/GameObjectBehaviours/SceneManipulatorAPI.cs'
 'Assets/Scripts/GameObjectBehaviours/SceneObjectManipulator.cs'
+'Assets/Scripts/GameObjectBehaviours/Sentence.cs'
 'Assets/Scripts/GameObjectBehaviours/TinkerText.cs'
 'Assets/Scripts/Ros/RosbridgeUtilities.cs'
 'Assets/Scripts/Ros/RosbridgeWebSocketClient.cs'

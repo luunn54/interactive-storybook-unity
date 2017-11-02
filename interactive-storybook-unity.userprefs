@@ -1,16 +1,15 @@
 ﻿<Properties StartupConfiguration="{BE773929-B95A-B392-E269-3DE0AFC1ECA5}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/GameObjectBehaviours/SceneObjectManipulator.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/GameObjectBehaviours/Stanza.cs">
     <Files>
       <File FileName="Assets/Scripts/GameMechanics/GameController.cs" Line="185" Column="40" />
-      <File FileName="Assets/Scripts/Ros/RosManager.cs" Line="7" Column="5" />
-      <File FileName="Assets/Scripts/Ros/RosbridgeWebSocketClient.cs" Line="317" Column="30" />
-      <File FileName="Assets/Scripts/Ros/RosbridgeUtilities.cs" Line="109" Column="56" />
       <File FileName="Assets/Scripts/GameObjectBehaviours/TinkerText.cs" Line="46" Column="57" />
-      <File FileName="Assets/Scripts/GameObjectBehaviours/SceneObjectManipulator.cs" Line="43" Column="9" />
+      <File FileName="Assets/Scripts/GameObjectBehaviours/SceneObjectManipulator.cs" Line="40" Column="6" />
       <File FileName="Assets/Scripts/GameMechanics/SceneDescription.cs" Line="116" Column="6" />
-      <File FileName="Assets/Scripts/Util/Constants.cs" Line="21" Column="1" NotebookId="1" />
-      <File FileName="Assets/Scripts/GameMechanics/StoryManager.cs" Line="248" Column="46" NotebookId="1" />
-      <File FileName="Assets/Scripts/GameObjectBehaviours/SceneManipulatorAPI.cs" Line="16" Column="7" NotebookId="1" />
+      <File FileName="Assets/Scripts/GameObjectBehaviours/Sentence.cs" Line="9" Column="2" />
+      <File FileName="Assets/Scripts/GameMechanics/AudioManager.cs" Line="14" Column="32" />
+      <File FileName="Assets/Scripts/GameObjectBehaviours/Stanza.cs" Line="4" Column="36" />
+      <File FileName="Assets/Scripts/Util/Constants.cs" Line="12" Column="5" NotebookId="1" />
+      <File FileName="Assets/Scripts/GameMechanics/StoryManager.cs" Line="40" Column="40" NotebookId="1" />
       <File FileName="Assets/SceneDescriptions/the_hungry_toad/the_hungry_toad_02.json" Line="1" Column="373" NotebookId="1" />
       <File FileName="Assets/SceneDescriptions/the_hungry_toad/the_hungry_toad_01.json" Line="1" Column="78" NotebookId="1" />
     </Files>

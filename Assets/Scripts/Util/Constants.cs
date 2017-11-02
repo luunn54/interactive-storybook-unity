@@ -1,6 +1,7 @@
 // This file contains constants for the interactive storybook.
 
-public static class Constants {
+public static class Constants
+{
     // ROS connection.
     public static bool USE_ROS = true;
     public static string DEFAULT_ROSBRIDGE_IP = "192.168.1.149";
@@ -13,7 +14,8 @@ public static class Constants {
 
 // Display Modes.
 // Related to ScreenOrientation but also deals with layout of the scene.
-public enum DisplayMode {
+public enum DisplayMode
+{
     LandscapeWide,
     Landscape,
     Portrait

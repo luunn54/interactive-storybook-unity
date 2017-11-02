@@ -260,6 +260,9 @@
     <Compile Include="Assets\Scripts\Ros\RosManager.cs" />
     <Compile Include="Assets\Scripts\Util\Constants.cs" />
     <Compile Include="Assets\Scripts\Util\Logger.cs" />
+    <Compile Include="Assets\Scripts\GameObjectBehaviours\Sentence.cs" />
+    <Compile Include="Assets\Scripts\GameMechanics\StoryAudioManager.cs" />
+    <Compile Include="Assets\Scripts\GameObjectBehaviours\Stanza.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Resources\StoryText\a_cub_can.txt" />

@@ -40,6 +40,9 @@ public class StoryManager : MonoBehaviour {
     private float TEXT_HEIGHT = TinkerText.BUTTON_TEXT_HEIGHT;
     private float remainingStanzaWidth = 0; // For loading TinkerTexts.
 
+    // Array of sentences where each sentence is an array of stanzas.
+    private List<Sentence> sentences;
+
     // Dynamically created Stanzas.
     private List<GameObject> stanzas;
     // Dynamically created TinkerTexts specific to this scene.
