@@ -122,8 +122,8 @@ public class StoryManager : MonoBehaviour {
 
     // Begin playing the audio. Can be called by GameController in response
     // to UI events like button clicks or swipes.
-    public void StartAudio() {
-        this.audioManager.StartAudio();
+    public void ToggleAudio() {
+        this.audioManager.ToggleAudio();
     }
 
     private void loadTitlePage(SceneDescription description) {

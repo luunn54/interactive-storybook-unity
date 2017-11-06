@@ -58,9 +58,17 @@ public class StoryAudioManager : MonoBehaviour {
         this.audioSource.Pause();
     }
 
-    // Stop audio from playing and reset timestamp back to 0.
+    // Stop audio from playing (and reset timestamp back to 0).
     public void StopAudio() {
         this.audioSource.Stop();
+    }
+
+    public void ToggleAudio() {
+        if (this.audioSource.isPlaying) {
+            this.PauseAudio();
+        } else {
+            this.StartAudio();
+        }
     }
 
     // Parse timestamps file and set up the triggers.

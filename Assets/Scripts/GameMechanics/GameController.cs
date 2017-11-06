@@ -32,6 +32,8 @@ public class GameController : MonoBehaviour {
     public Button portraitBackButton;
     public Button portraitFinishButton;
 
+    public Button toggleAudioButton;
+
     private Button nextButton;
     private Button backButton;
     private Button finishButton;
@@ -91,6 +93,8 @@ public class GameController : MonoBehaviour {
         this.landscapeFinishButton.onClick.AddListener(onFinishButtonClick);
         this.portraitFinishButton.interactable = true;
         this.portraitFinishButton.onClick.AddListener(onFinishButtonClick);
+
+        this.toggleAudioButton.onClick.AddListener(toggleAudio);
 
         this.storyPages = new List<SceneDescription>();
         this.orientations = new Dictionary<string, ScreenOrientation>();
@@ -250,6 +254,10 @@ public class GameController : MonoBehaviour {
 
     private void onStopReadingReceived() {
         // Robot wants to intervene, so we should stop the automatic reading.    
+    }
+
+    private void toggleAudio() {
+        this.storyManager.ToggleAudio();
     }
 
 }
