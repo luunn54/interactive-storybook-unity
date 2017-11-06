@@ -13,6 +13,7 @@ public class StoryManager : MonoBehaviour {
 
     // We may want to call methods on GameController or add to the task queue.
     public GameController gameController;
+    public StoryAudioManager audioManager;
 
 	public GameObject portraitGraphicsPanel;
     public GameObject portraitTextPanel;
@@ -23,6 +24,8 @@ public class StoryManager : MonoBehaviour {
 
     public GameObject portraitTitlePanel;
     public GameObject landscapeTitlePanel;
+
+    public bool autoplayAudio = true;
 
     // Used for internal references.
     private GameObject graphicsPanel;
@@ -70,8 +73,6 @@ public class StoryManager : MonoBehaviour {
     void Start() {
         Logger.Log("StoryManager start");
 
-        this.gameController = GetComponent<GameController>();
-
         this.setDisplayMode(DisplayMode.Landscape);
         this.tinkerTexts = new List<GameObject>();
         this.stanzas = new List<GameObject>();
@@ -89,22 +90,20 @@ public class StoryManager : MonoBehaviour {
         // Special case for title page.
         if (description.isTitle) {
             this.loadTitlePage(description);
-            return;
+        } else {
+            // Load image.
+            this.loadImage(description.storyImageFile);
+
+            // Load all words as TinkerText. Begin at beginning of a stanza.
+            this.remainingStanzaWidth = 0;
+            foreach (string word in description.text.Split(' ')) {
+                this.loadTinkerText(word);
+            }
         }
 
-        // Load image.
-        this.loadImage(description.storyImageFile);
-
-        // Load all words as TinkerText. Begin at beginning of a stanza.
-        this.remainingStanzaWidth = 0;
-        foreach (string word in description.text.Split(' ')) {
-            this.loadTinkerText(word);
-        }
-
-        // TODO: figure out how to load audio. WHat object to attach it to?
-        // Its own invisible object? How to set up the triggering of words?
-        // Give it timestamps and while playing whenever it passes those
-        // timestamps it knows what triggers to make.
+        // Load audio. TODO: load timestamped info for triggers.
+        Logger.Log(description.audioFile);
+        this.audioManager.LoadAudioAndTimestamps(description.audioFile, "");
 
         // Load all scene objects.
         foreach (SceneObject sceneObject in description.sceneObjects) {
@@ -116,6 +115,15 @@ public class StoryManager : MonoBehaviour {
             this.loadTrigger(trigger);
         }
 
+        if (this.autoplayAudio) {
+            this.audioManager.StartAudio();
+        }
+    }
+
+    // Begin playing the audio. Can be called by GameController in response
+    // to UI events like button clicks or swipes.
+    public void StartAudio() {
+        this.audioManager.StartAudio();
     }
 
     private void loadTitlePage(SceneDescription description) {
@@ -123,9 +131,7 @@ public class StoryManager : MonoBehaviour {
         // for fitting the space and making the aspect ratio correct.
         // Basically the same as first half of loadImage() function.
         string imageFile = description.storyImageFile;
-        string storyName = imageFile.Substring(0,
-            imageFile.LastIndexOf("_", StringComparison.CurrentCulture)
-        );
+        string storyName = Util.GetStoryName(imageFile);
         GameObject newObj = new GameObject();
         newObj.AddComponent<Image>();
         newObj.AddComponent<AspectRatioFitter>();
@@ -140,16 +146,12 @@ public class StoryManager : MonoBehaviour {
         newObj.GetComponent<Image>().sprite = sprite;
         newObj.GetComponent<Image>().preserveAspect = true;
         this.storyImage = newObj;
-
-        // TODO: load the audio.
     }
 
     // Argument imageFile should be something like "the_hungry_toad_01" and then
     // this function will find it in the Resources directory and load it.
     private void loadImage(string imageFile) {
-        string storyName = imageFile.Substring(0,
-            imageFile.LastIndexOf("_", StringComparison.CurrentCulture)
-        );
+        string storyName = Util.GetStoryName(imageFile);
         GameObject newObj = new GameObject();
         newObj.AddComponent<Image>();
         newObj.AddComponent<AspectRatioFitter>();

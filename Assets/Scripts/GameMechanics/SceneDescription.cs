@@ -93,7 +93,7 @@ public class SceneDescription {
     // All of the text. StoryManager will create TinkerText.
     public string text;
 
-    // E.g. "the_hungry_toad_2".
+    // E.g. "the_hungry_toad_2" or "the_hungry_toad_title".
     public string audioFile;
 
     // List of scene objects to place.

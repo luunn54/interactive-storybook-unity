@@ -248,7 +248,8 @@ public class GameController : MonoBehaviour {
     // They should add tasks to the task queue.
     // Don't worry about this yet.
 
-    void onStopReadingReceived() {
+    private void onStopReadingReceived() {
         // Robot wants to intervene, so we should stop the automatic reading.    
     }
+
 }
