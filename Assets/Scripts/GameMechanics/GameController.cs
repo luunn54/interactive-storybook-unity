@@ -126,10 +126,6 @@ public class GameController : MonoBehaviour {
                 Logger.LogError("Error invoking action on main thread!\n" + e);
             }
         }
-        // TODO: Need to handle the progression of speech/animation here?
-        // Yes, Cynthia said there's a tool that will get the timing for me,
-        // for highlighting. So just play audio and call highlighting.
-        // This should probably happen in StoryManager and not GameController.
     }
 
     private void selectStory(string story) {
@@ -137,7 +133,6 @@ public class GameController : MonoBehaviour {
         DirectoryInfo dir = new DirectoryInfo(Application.dataPath +
                                               "/SceneDescriptions/" + story);
         FileInfo[] files = dir.GetFiles("*.json");
-        Logger.Log(files.Length);
         // Sort to ensure pages are in order.
         Array.Sort(files, (f1, f2) => string.Compare(f1.Name, f2.Name));
         this.storyPages.Clear();

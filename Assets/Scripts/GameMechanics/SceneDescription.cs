@@ -182,8 +182,6 @@ public class SceneDescription {
         } else if (SceneDescription.orientation == ScreenOrientation.Portrait) {
             this.displayMode = DisplayMode.Portrait;
         }
-        Logger.Log(this.storyImageFile);
-        Logger.Log("hello displayMode is " + this.displayMode.ToString());
     }
 
 }

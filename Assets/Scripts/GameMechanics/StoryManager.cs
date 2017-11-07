@@ -66,10 +66,6 @@ public class StoryManager : MonoBehaviour {
     private float imageScaleFactor;
     private DisplayMode displayMode;
 
-	void Awake() {
-        Logger.Log("StoryManager awake");
-    }
-
     void Start() {
         Logger.Log("StoryManager start");
 
@@ -102,7 +98,6 @@ public class StoryManager : MonoBehaviour {
         }
 
         // Load audio. TODO: load timestamped info for triggers.
-        Logger.Log(description.audioFile);
         this.audioManager.LoadAudioAndTimestamps(description.audioFile, "");
 
         // Load all scene objects.
@@ -116,7 +111,7 @@ public class StoryManager : MonoBehaviour {
         }
 
         if (this.autoplayAudio) {
-            this.audioManager.StartAudio();
+            this.audioManager.PlayAudio();
         }
     }
 
@@ -262,7 +257,6 @@ public class StoryManager : MonoBehaviour {
 
     // Sets up a trigger between TinkerTexts and SceneObjects.
     private void loadTrigger(Trigger trigger) {
-        Logger.Log(trigger.sceneObjectLabel);
         SceneObjectManipulator manip = 
             this.sceneObjects[trigger.sceneObjectLabel]
                 .GetComponent<SceneObjectManipulator>();
@@ -274,7 +268,6 @@ public class StoryManager : MonoBehaviour {
         // linearly with the number of action types and condition types.
         switch (trigger.action.type) {
             case ActionType.Highlight:
-                Logger.Log(trigger.action.args.color.ToString());
                 action = manip.Highlight(trigger.action.args.color);
                 break;
             case ActionType.MoveToPosition:
@@ -288,8 +281,6 @@ public class StoryManager : MonoBehaviour {
         }
         switch (trigger.condition.type) {
             case ConditionType.Click:
-                Logger.Log(tinkerText.GetId());
-                Logger.Log(manip.gameObject.name);
                 tinkerText.AddClickHandler(action);
                 break;
             default:
