@@ -27,6 +27,7 @@ public class StoryAudioManager : MonoBehaviour {
 	// Use this for initialization
 	private void Start() {
         Logger.Log("StoryAudioManager start");
+        this.resetInternalTimestamps();
         this.triggers = new Dictionary<float, Action>();
         this.triggers.Add(0.5f, () => { Logger.Log("0 current Timestamp: " + this.currentTimestamp.ToString()); });
         this.triggers.Add(1.0f, () => { Logger.Log("1 current Timestamp: " + this.currentTimestamp.ToString()); });
@@ -39,8 +40,16 @@ public class StoryAudioManager : MonoBehaviour {
         // Check our current timestamp, and compare against timestamps of
         // the triggers we have, in order to cause specific actions to happen.
         this.currentTimestamp = this.audioSource.time;
+        // TODO: the end time might be very far in the future for the last
+        // words, can check for end by checking when currentTimestamp becomes
+        // less than lastTimestamp, and make sure all remaining events trigger.
+        float maxCutoffTime = this.currentTimestamp;
+        if (this.currentTimestamp < this.lastTimestamp) {
+            maxCutoffTime = float.MaxValue;
+        }
+
         foreach (KeyValuePair<float, Action> trigger in this.triggers) {
-            if (trigger.Key > this.lastTimestamp && trigger.Key < this.currentTimestamp) {
+            if (trigger.Key > this.lastTimestamp && trigger.Key < maxCutoffTime) {
                 trigger.Value();
             }
         }
@@ -71,6 +80,7 @@ public class StoryAudioManager : MonoBehaviour {
     // Stop audio from playing (and reset timestamp back to 0).
     public void StopAudio() {
         this.audioSource.Stop();
+        this.resetInternalTimestamps();
     }
 
     public void ToggleAudio() {
@@ -85,6 +95,12 @@ public class StoryAudioManager : MonoBehaviour {
     public void PlayInterval(float start, float end) {
         this.audioSource.time = start; // TODO: maybe backtrack a tiny bit?
         this.PlayAudio();
+    }
+
+    private void resetInternalTimestamps() {
+        this.lastTimestamp = float.MinValue;
+        this.currentTimestamp = 0.0f;
+        this.stopTimestamp = float.MaxValue;
     }
 
     // Parse timestamps file and set up the triggers.
