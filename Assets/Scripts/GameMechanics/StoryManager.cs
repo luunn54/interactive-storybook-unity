@@ -83,22 +83,32 @@ public class StoryManager : MonoBehaviour {
     public void LoadPage(SceneDescription description) {
         this.setDisplayMode(description.displayMode);
 
-        // Special case for title page.
+        // Load audio.
+        this.audioManager.LoadAudio(description.audioFile);
+
         if (description.isTitle) {
+            // Special case for title page.
+            // No TinkerTexts, and image takes up a larger space.
             this.loadTitlePage(description);
         } else {
             // Load image.
             this.loadImage(description.storyImageFile);
 
-            // Load all words as TinkerText. Begin at beginning of a stanza.
+            // Load all words as TinkerText. Start at beginning of a stanza.
             this.remainingStanzaWidth = 0;
-            foreach (string word in description.text.Split(' ')) {
-                this.loadTinkerText(word);
-            }
-        }
 
-        // Load audio. TODO: load timestamped info for triggers.
-        this.audioManager.LoadAudioAndTimestamps(description.audioFile, "");
+            string[] textWords = description.text.Split(' ');
+            Logger.Log(textWords[0]);
+            Logger.Log(description.timestamps.Length);
+            Debug.Assert(textWords.Length == description.timestamps.Length);
+            for (int i = 0; i < textWords.Length; i++)
+            {
+                // This will create the TinkerText and update stanzas.
+                this.loadTinkerText(textWords[i], description.timestamps[i]);
+            }
+            // Load audio triggers for TinkerText.
+            this.loadAudioTriggers();
+        }
 
         // Load all scene objects.
         foreach (SceneObject sceneObject in description.sceneObjects) {
@@ -109,6 +119,7 @@ public class StoryManager : MonoBehaviour {
         foreach (Trigger trigger in description.triggers) {
             this.loadTrigger(trigger);
         }
+
 
         if (this.autoplayAudio) {
             this.audioManager.PlayAudio();
@@ -184,7 +195,7 @@ public class StoryManager : MonoBehaviour {
     }
 
     // Add a new TinkerText for the given word.
-    private void loadTinkerText(string word) {
+    private void loadTinkerText(string word, AudioTimestamp timestamp) {
         if (word.Length == 0) {
             return;
         }
@@ -206,6 +217,8 @@ public class StoryManager : MonoBehaviour {
             GameObject newStanza =
                 Instantiate((GameObject)Resources.Load("Prefabs/StanzaPanel"));
             newStanza.transform.SetParent(this.textPanel.transform, false);
+            // TODO: set the stanza's start time as the tinkertext's start.
+            // and set the end of the previous stanza.
             this.stanzas.Add(newStanza);
             this.currentStanza = newStanza;
             // Reset the remaining stanza width.
@@ -215,8 +228,9 @@ public class StoryManager : MonoBehaviour {
 		// Initialize the TinkerText width correctly.
         // Set new TinkerText parent to be the stanza.
         newTinkerText.GetComponent<TinkerText>()
-                     .Init(this.tinkerTexts.Count, preferredWidth);
+                     .Init(this.tinkerTexts.Count, timestamp, preferredWidth);
 		newTinkerText.transform.SetParent(this.currentStanza.transform, false);
+
         this.remainingStanzaWidth -= preferredWidth;
         this.remainingStanzaWidth -= STANZA_SPACING;
         this.tinkerTexts.Add(newTinkerText);
@@ -257,39 +271,34 @@ public class StoryManager : MonoBehaviour {
 
     // Sets up a trigger between TinkerTexts and SceneObjects.
     private void loadTrigger(Trigger trigger) {
-        SceneObjectManipulator manip = 
-            this.sceneObjects[trigger.sceneObjectLabel]
-                .GetComponent<SceneObjectManipulator>();
-        TinkerText tinkerText = this.tinkerTexts[trigger.textId]
-                                    .GetComponent<TinkerText>();
-        Action action = new Action(() => {});
-        // TODO: move some of this logic into SceneObjectManipulator
-        // instead of in loadTrigger. Right now, the switch statements grow
-        // linearly with the number of action types and condition types.
-        switch (trigger.action.type) {
-            case ActionType.Highlight:
-                action = manip.Highlight(trigger.action.args.color);
-                break;
-            case ActionType.MoveToPosition:
-                break;
-            case ActionType.ChangeSize:
-                break;
-            default:
-                Logger.LogError("Unknown trigger action: " +
-                                trigger.action.type.ToString());
-                break;
-        }
-        switch (trigger.condition.type) {
-            case ConditionType.Click:
+        switch (trigger.type) {
+            case TriggerType.CLICK_TINKERTEXT_SCENE_OBJECT:
+                SceneObjectManipulator manip = 
+                    this.sceneObjects[trigger.args.sceneObjectLabel]
+                    .GetComponent<SceneObjectManipulator>();
+                TinkerText tinkerText = this.tinkerTexts[trigger.args.textId]
+                                            .GetComponent<TinkerText>();
+                Action action = manip.Highlight(new Color(0, 1, 1, 60f / 255));
                 tinkerText.AddClickHandler(action);
                 break;
             default:
-                Logger.LogError("Unknown condition type: " +
-                                trigger.condition.type.ToString());
+                Logger.LogError("Unknown TriggerType: " +
+                                trigger.type.ToString());
                 break;
+                
         }
     }
 
+    // Sets up a timestamp trigger on the audio manager.
+    private void loadAudioTriggers() {
+        foreach (GameObject t in this.tinkerTexts) {
+            TinkerText tinkerText = t.GetComponent<TinkerText>();
+            this.audioManager.AddTrigger(tinkerText.audioStartTime,
+                                         tinkerText.OnStartAudioTrigger);
+            this.audioManager.AddTrigger(tinkerText.audioEndTime,
+                             tinkerText.OnEndAudioTrigger);
+        }
+    }
 
     // Called by GameController when we should remove all elements we've added
     // to this page (usually in preparration for the creation of another page).

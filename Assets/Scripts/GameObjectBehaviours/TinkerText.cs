@@ -18,6 +18,7 @@ public class TinkerText : MonoBehaviour
 {
 
     private int id;
+    public float audioStartTime, audioEndTime;
 
     // Have a reference tot he children objects in this TinkerText.
     public GameObject textButton;
@@ -55,8 +56,10 @@ public class TinkerText : MonoBehaviour
     // Also need to set the component to active. 
     // Don't need to know anything about its position, the layout groups
     // should automatically handle that.
-    public void Init(int id, float newWidth) {
+    public void Init(int id, AudioTimestamp timestamp, float newWidth) {
         this.id = id;
+        this.audioStartTime = timestamp.start;
+        this.audioEndTime = timestamp.end;
         gameObject.SetActive(true);
         // Update size of TinkerText.
         GetComponent<RectTransform>().sizeDelta =
@@ -71,4 +74,11 @@ public class TinkerText : MonoBehaviour
         this.clickUnityAction += new UnityAction(action);
     }
 
+    public void OnStartAudioTrigger() {
+        Logger.Log(id.ToString() + " start");
+    }
+
+    public void OnEndAudioTrigger() {
+        Logger.Log(id.ToString() + " end");
+    }
 }

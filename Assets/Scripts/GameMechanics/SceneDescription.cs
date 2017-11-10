@@ -34,45 +34,27 @@ public struct SceneObject {
 }
 
 [Serializable]
-public enum ConditionType {
-    Click
+public struct AudioTimestamp {
+    public float start;
+    public float end;
 }
 
 [Serializable]
-public enum ActionType {
-    Highlight,
-    MoveToPosition,
-    ChangeSize
-}
-
-// All possible arguments we'd want to be passed along with a trigger action.
-[Serializable]
-public struct ActionArgs
-{
-    public Color color;
-    public int alpha, r, g, b; // For colors, 0-255.
-    public int x, y; // For positions or sizing.
+public enum TriggerType {
+    CLICK_TINKERTEXT_SCENE_OBJECT,
 }
 
 [Serializable]
-public struct TriggerAction {
-    public ActionType type;
-    public string typeString;
-    public ActionArgs args;
-}
-
-[Serializable]
-public struct TriggerCondition {
-    public ConditionType type;
-    public string typeString;
+public struct TriggerArgs {
+    public int textId;
+    public string sceneObjectLabel;
+    public float timestamp;
 }
 
 [Serializable]
 public struct Trigger {
-    public int textId;
-    public string sceneObjectLabel;
-    public TriggerCondition condition;
-    public TriggerAction action;
+    public TriggerType type;
+    public TriggerArgs args;
 }
 
 // SceneDescription can be serialized to and from JSON.
@@ -83,7 +65,6 @@ public class SceneDescription {
     private static ScreenOrientation orientation;
 
     public DisplayMode displayMode;
-    public string displayModeString; // Easier for deserialization maybe.
 
     public bool isTitle;
 
@@ -95,6 +76,8 @@ public class SceneDescription {
 
     // E.g. "the_hungry_toad_2" or "the_hungry_toad_title".
     public string audioFile;
+
+    public AudioTimestamp[] timestamps;
 
     // List of scene objects to place.
     public SceneObject[] sceneObjects;
@@ -126,41 +109,6 @@ public class SceneDescription {
 
         // Decide if the image should be in landscape or portrait mode.
         this.setDisplayMode();
-
-        // Process triggers.
-        for (int i = 0; i < this.triggers.Length; i++)
-        {
-            Trigger trigger = this.triggers[i];
-            if (trigger.condition.typeString != null) {
-                string cType = trigger.condition.typeString
-                                      .Substring(0, 1).ToUpper() +
-                                      trigger.condition.typeString.Substring(1);
-                this.triggers[i].condition.type = (ConditionType)Enum.Parse(
-                    typeof(ConditionType), cType);
-            }
-            if (trigger.action.typeString != null) {
-                string aType = trigger.action.typeString
-                                  .Substring(0, 1).ToUpper() +
-                                  trigger.action.typeString.Substring(1);
-                this.triggers[i].action.type = (ActionType)Enum.Parse(
-                    typeof(ActionType), aType);
-            }
-            // Convert from RGB to Color if necessary.
-            if (this.triggers[i].action.type == ActionType.Highlight)
-            {
-                // If no alpha provided, assume it's 1.
-                float alpha = 1;
-                if (trigger.action.args.alpha > 0) {
-                    alpha = (float)trigger.action.args.alpha / 255;
-                }
-                this.triggers[i].action.args.color = new Color(
-                    (float)trigger.action.args.r / 255,
-                    (float)trigger.action.args.g / 255,
-                    (float)trigger.action.args.b / 255,
-                    alpha
-                );
-            }
-        }
     }
 
     private void setDisplayMode() {
