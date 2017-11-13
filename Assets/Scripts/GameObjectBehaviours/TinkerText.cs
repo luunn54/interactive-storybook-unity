@@ -18,6 +18,7 @@ public class TinkerText : MonoBehaviour
 {
 
     private int id;
+    private float textWidth;
     public float audioStartTime, audioEndTime;
 
     // Have a reference tot he children objects in this TinkerText.
@@ -56,17 +57,22 @@ public class TinkerText : MonoBehaviour
     // Also need to set the component to active. 
     // Don't need to know anything about its position, the layout groups
     // should automatically handle that.
-    public void Init(int id, AudioTimestamp timestamp, float newWidth) {
+    public void Init(int id, string word, AudioTimestamp timestamp) {
         this.id = id;
+        this.text.GetComponent<Text>().text = word;
         this.audioStartTime = timestamp.start;
         this.audioEndTime = timestamp.end;
         gameObject.SetActive(true);
+    }
+
+    public void SetWidth(float newWidth) {
         // Update size of TinkerText.
         GetComponent<RectTransform>().sizeDelta =
             new Vector2(newWidth, TINKER_TEXT_HEIGHT);
         // Update size of Button.
         this.textButton.GetComponent<RectTransform>().sizeDelta =
             new Vector2(newWidth, BUTTON_TEXT_HEIGHT);
+        this.textWidth = newWidth;
     }
 
     // Add a new action to the UnityAction click handler.
@@ -75,10 +81,13 @@ public class TinkerText : MonoBehaviour
     }
 
     public void OnStartAudioTrigger() {
-        Logger.Log(id.ToString() + " start");
+        Logger.Log(id.ToString() + " start" + this.ToString());
+        // Change the text color.
+        this.text.GetComponent<Text>().color = Color.magenta;
     }
 
     public void OnEndAudioTrigger() {
         Logger.Log(id.ToString() + " end");
+        this.text.GetComponent<Text>().color = Color.black;
     }
 }

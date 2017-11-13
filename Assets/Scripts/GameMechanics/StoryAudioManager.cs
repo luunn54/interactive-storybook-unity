@@ -29,10 +29,6 @@ public class StoryAudioManager : MonoBehaviour {
         Logger.Log("StoryAudioManager start");
         this.resetInternalTimestamps();
         this.triggers = new Dictionary<float, Action>();
-        this.triggers.Add(0.5f, () => { Logger.Log("0 current Timestamp: " + this.currentTimestamp.ToString()); });
-        this.triggers.Add(1.0f, () => { Logger.Log("1 current Timestamp: " + this.currentTimestamp.ToString()); });
-        this.triggers.Add(1.5f, () => { Logger.Log("2 current Timestamp: " + this.currentTimestamp.ToString()); });
-        this.triggers.Add(2.0f, () => { Logger.Log("3 current Timestamp: " + this.currentTimestamp.ToString()); });
 	}
 
     // Use Update for handling when to trigger actions in other objects.
@@ -41,13 +37,15 @@ public class StoryAudioManager : MonoBehaviour {
         // the triggers we have, in order to cause specific actions to happen.
         this.currentTimestamp = this.audioSource.time;
         float maxCutoffTime = this.currentTimestamp;
+        // Watch for special case where the audio has finished and we need to
+        // make sure we call any outstanding triggers.
         if (this.currentTimestamp < this.lastTimestamp) {
             maxCutoffTime = float.MaxValue;
         }
 
         foreach (KeyValuePair<float, Action> trigger in this.triggers) {
             if (trigger.Key > this.lastTimestamp &&
-                trigger.Key < maxCutoffTime) {
+                trigger.Key <= maxCutoffTime) {
                 // Invoke this trigger's action.
                 trigger.Value();
             }
@@ -102,10 +100,16 @@ public class StoryAudioManager : MonoBehaviour {
         this.PlayAudio();
     }
 
+    public void ClearTriggersAndReset() {
+        this.triggers.Clear();
+        this.resetInternalTimestamps();
+    }
+
     private void resetInternalTimestamps() {
         this.lastTimestamp = float.MinValue;
         this.currentTimestamp = 0.0f;
         this.stopTimestamp = float.MaxValue;
     }
+
 
 }

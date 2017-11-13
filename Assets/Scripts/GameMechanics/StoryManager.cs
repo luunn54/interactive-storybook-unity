@@ -40,7 +40,6 @@ public class StoryManager : MonoBehaviour {
     // Variables for loading TinkerTexts.
     private float STANZA_SPACING = 20; // Matches Prefab.
     private float MIN_TINKER_TEXT_WIDTH = TinkerText.MIN_WIDTH;
-    private float TEXT_HEIGHT = TinkerText.BUTTON_TEXT_HEIGHT;
     private float remainingStanzaWidth = 0; // For loading TinkerTexts.
 
     // Array of sentences where each sentence is an array of stanzas.
@@ -199,19 +198,18 @@ public class StoryManager : MonoBehaviour {
         if (word.Length == 0) {
             return;
         }
-		// Create a new stanza if we there's not enough stanza width left.
-		// Figure out how wide this word will be, first create the word.
 		GameObject newTinkerText =
             Instantiate((GameObject)Resources.Load("Prefabs/TinkerText"));
+        newTinkerText.GetComponent<TinkerText>()
+             .Init(this.tinkerTexts.Count, word, timestamp);
+        // Figure out how wide the TinkerText wants to be, then decide if
+        // we need to make a new stanza.
         GameObject newText = newTinkerText.GetComponent<TinkerText>().text;
-        newText.GetComponent<Text>().text = word;
         float preferredWidth =
             LayoutUtility.GetPreferredWidth(
                 newText.GetComponent<RectTransform>()
             );
         preferredWidth = Math.Max(preferredWidth, this.MIN_TINKER_TEXT_WIDTH);
-        newText.GetComponent<RectTransform>().sizeDelta =
-                   new Vector2(preferredWidth, this.TEXT_HEIGHT);
         if (preferredWidth > this.remainingStanzaWidth){
             // Add a new stanza.
             GameObject newStanza =
@@ -225,10 +223,9 @@ public class StoryManager : MonoBehaviour {
             this.remainingStanzaWidth =
                     this.textPanel.GetComponent<RectTransform>().sizeDelta.x;
         }
-		// Initialize the TinkerText width correctly.
+        // Initialize the TinkerText width correctly.
         // Set new TinkerText parent to be the stanza.
-        newTinkerText.GetComponent<TinkerText>()
-                     .Init(this.tinkerTexts.Count, timestamp, preferredWidth);
+        newTinkerText.GetComponent<TinkerText>().SetWidth(preferredWidth);
 		newTinkerText.transform.SetParent(this.currentStanza.transform, false);
 
         this.remainingStanzaWidth -= preferredWidth;
@@ -321,6 +318,8 @@ public class StoryManager : MonoBehaviour {
         // Remove all images.
         Destroy(this.storyImage.gameObject);
         this.storyImage = null;
+        // Remove audio triggers.
+        this.audioManager.ClearTriggersAndReset();
     }
 
     // Update the display mode. We need to update our internal references to
