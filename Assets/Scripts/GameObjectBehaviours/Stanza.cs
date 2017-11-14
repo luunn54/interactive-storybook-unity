@@ -10,6 +10,7 @@ using System.Collections.Generic;
 public class Stanza : MonoBehaviour {
 
     public GameObject stanzaPanel;
+    private StoryAudioManager audioManager;
 
     // Know which TinkerTexts belong to this stanza.
     private int firstTinkerTextIndex; // Global index.
@@ -23,6 +24,10 @@ public class Stanza : MonoBehaviour {
 
     // References to all of the TinkerText objects that belong to this stanza.
     private List<GameObject> tinkerTexts;
+
+    public void Init(StoryAudioManager audio) {
+        this.audioManager = audio;
+    }
 
     private void Start() {
         Logger.Log("Stanza start");
@@ -39,6 +44,10 @@ public class Stanza : MonoBehaviour {
 
     public void SetEndTimestamp(float end) {
         this.endTimestamp = end;
+    }
+
+    public void PlayStanza() {
+        this.audioManager.PlayInterval(this.startTimestamp, this.endTimestamp);
     }
 
 }

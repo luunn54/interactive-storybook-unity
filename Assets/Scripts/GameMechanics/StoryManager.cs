@@ -25,7 +25,7 @@ public class StoryManager : MonoBehaviour {
     public GameObject portraitTitlePanel;
     public GameObject landscapeTitlePanel;
 
-    public bool autoplayAudio = true;
+    private bool autoplayAudio = true;
 
     // Used for internal references.
     private GameObject graphicsPanel;
@@ -36,6 +36,7 @@ public class StoryManager : MonoBehaviour {
     private float graphicsPanelWidth;
     private float graphicsPanelHeight;
     private float graphicsPanelAspectRatio;
+    private float titlePanelAspectRatio;
 
     // Variables for loading TinkerTexts.
     private float STANZA_SPACING = 20; // Matches Prefab.
@@ -146,7 +147,7 @@ public class StoryManager : MonoBehaviour {
         newObj.GetComponent<AspectRatioFitter>().aspectMode =
                   AspectRatioFitter.AspectMode.FitInParent;
         newObj.GetComponent<AspectRatioFitter>().aspectRatio =
-                  this.graphicsPanelAspectRatio;
+                  this.titlePanelAspectRatio;
         string fullImagePath = "StoryPages/" + storyName + "/" + imageFile;
         Sprite sprite = Resources.Load<Sprite>(fullImagePath);
         newObj.GetComponent<Image>().sprite = sprite;
@@ -220,6 +221,7 @@ public class StoryManager : MonoBehaviour {
             GameObject newStanza =
                 Instantiate((GameObject)Resources.Load("Prefabs/StanzaPanel"));
             newStanza.transform.SetParent(this.textPanel.transform, false);
+            newStanza.GetComponent<Stanza>().Init(this.audioManager);
             // Set the end time of previous stanza and start time of the new
             // stanza we're adding.
             if (this.currentStanza != null) {
@@ -260,6 +262,7 @@ public class StoryManager : MonoBehaviour {
             newObj.GetComponent<SceneObjectManipulator>();
         Position pos = sceneObject.position;
         manip.label = sceneObject.label;
+        Logger.Log("x, y " + storyImageX.ToString() + " " + storyImageY.ToString());
         manip.MoveToPosition(
             new Vector3(this.storyImageX + pos.left * this.imageScaleFactor,
                         this.storyImageY - pos.top * this.imageScaleFactor)
@@ -308,6 +311,11 @@ public class StoryManager : MonoBehaviour {
                              tinkerText.OnEndAudioTrigger);
         }
     }
+
+    // Called by GameController to change whether we autoplay or not.
+    public void SetAutoplay(bool newValue) {
+        this.autoplayAudio = newValue;
+    } 
 
     // Called by GameController when we should remove all elements we've added
     // to this page (usually in preparration for the creation of another page).
@@ -368,6 +376,8 @@ public class StoryManager : MonoBehaviour {
             this.graphicsPanelHeight = (float)rect.y;
             this.graphicsPanelAspectRatio =
                 this.graphicsPanelWidth / this.graphicsPanelHeight;
+            rect = this.titlePanel.GetComponent<RectTransform>().sizeDelta;
+            this.titlePanelAspectRatio = (float)rect.x / (float)rect.y;
         }
     }
 

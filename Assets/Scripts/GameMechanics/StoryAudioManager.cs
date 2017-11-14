@@ -72,6 +72,11 @@ public class StoryAudioManager : MonoBehaviour {
 
     // Start playing the audio (in a separate thread?).
     public void PlayAudio() {
+        this.StopAudio();
+        this.audioSource.Play();
+    }
+
+    public void UnpauseAudio() {
         this.audioSource.Play();
     }
 
@@ -90,12 +95,13 @@ public class StoryAudioManager : MonoBehaviour {
         if (this.audioSource.isPlaying) {
             this.PauseAudio();
         } else {
-            this.PlayAudio();
+            this.UnpauseAudio();
         }
     }
 
     // Plays the audio between start seconds and end seconds.
     public void PlayInterval(float start, float end) {
+        this.StopAudio();
         this.audioSource.time = start; // TODO: maybe backtrack a tiny bit?
         this.PlayAudio();
     }
@@ -110,6 +116,5 @@ public class StoryAudioManager : MonoBehaviour {
         this.currentTimestamp = 0.0f;
         this.stopTimestamp = float.MaxValue;
     }
-
 
 }
