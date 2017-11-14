@@ -41,6 +41,7 @@ public class StoryManager : MonoBehaviour {
     private float STANZA_SPACING = 20; // Matches Prefab.
     private float MIN_TINKER_TEXT_WIDTH = TinkerText.MIN_WIDTH;
     private float remainingStanzaWidth = 0; // For loading TinkerTexts.
+    private bool prevWordEndsStanza = false; // Know when to start new stanza.
 
     // Array of sentences where each sentence is an array of stanzas.
     private List<Sentence> sentences;
@@ -211,15 +212,24 @@ public class StoryManager : MonoBehaviour {
             );
         preferredWidth = Math.Max(preferredWidth, this.MIN_TINKER_TEXT_WIDTH);
         Logger.Log("preferred_width: " + preferredWidth.ToString());
-        if (preferredWidth > this.remainingStanzaWidth){
+        // TODO: also add a new stanza if we come across a good paragraph break,
+        // such as a comma, period, question mark or an exclamation mark.
+        if (preferredWidth > this.remainingStanzaWidth ||
+            this.prevWordEndsStanza) {
             // Add a new stanza.
             GameObject newStanza =
                 Instantiate((GameObject)Resources.Load("Prefabs/StanzaPanel"));
             newStanza.transform.SetParent(this.textPanel.transform, false);
-            // TODO: set the stanza's start time as the tinkertext's start.
-            // and set the end of the previous stanza.
+            // Set the end time of previous stanza and start time of the new
+            // stanza we're adding.
+            if (this.currentStanza != null) {
+                this.currentStanza.GetComponent<Stanza>().SetEndTimestamp(
+                timestamp.start);
+            }
             this.stanzas.Add(newStanza);
             this.currentStanza = newStanza;
+            this.currentStanza.GetComponent<Stanza>().SetStartTimestamp(
+                timestamp.start);
             // Reset the remaining stanza width.
             this.remainingStanzaWidth =
                     this.textPanel.GetComponent<RectTransform>().sizeDelta.x;
@@ -232,6 +242,7 @@ public class StoryManager : MonoBehaviour {
         this.remainingStanzaWidth -= preferredWidth;
         this.remainingStanzaWidth -= STANZA_SPACING;
         this.tinkerTexts.Add(newTinkerText);
+        this.prevWordEndsStanza = Util.WordShouldEndStanza(word);
     }
 
     // Adds a SceneObject to the story scene.
@@ -321,6 +332,8 @@ public class StoryManager : MonoBehaviour {
         this.storyImage = null;
         // Remove audio triggers.
         this.audioManager.ClearTriggersAndReset();
+
+        this.prevWordEndsStanza = false;
     }
 
     // Update the display mode. We need to update our internal references to
