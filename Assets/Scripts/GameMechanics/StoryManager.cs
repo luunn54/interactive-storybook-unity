@@ -349,6 +349,11 @@ public class StoryManager : MonoBehaviour {
     public void setDisplayMode(DisplayMode newMode) {
         if (this.displayMode != newMode) {
             this.displayMode = newMode;
+            if (this.graphicsPanel != null) {
+                this.graphicsPanel.SetActive(false);
+                this.textPanel.SetActive(false);
+                this.titlePanel.SetActive(false);
+            }
             switch (this.displayMode)
             {
                 case DisplayMode.Landscape:
@@ -370,6 +375,9 @@ public class StoryManager : MonoBehaviour {
                     Logger.LogError("unknown display mode " + newMode);
                     break;
             }
+            this.graphicsPanel.SetActive(true);
+            this.textPanel.SetActive(true);
+            this.titlePanel.SetActive(true);
             Vector2 rect =
                 this.graphicsPanel.GetComponent<RectTransform>().sizeDelta;
             this.graphicsPanelWidth = (float)rect.x;
