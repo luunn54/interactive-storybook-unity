@@ -2,16 +2,15 @@
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/GameMechanics/StoryManager.cs">
     <Files>
       <File FileName="Assets/Scripts/GameMechanics/GameController.cs" Line="247" Column="35" />
-      <File FileName="Assets/Scripts/GameObjectBehaviours/TinkerText.cs" Line="77" Column="5" />
+      <File FileName="Assets/Scripts/GameObjectBehaviours/TinkerText.cs" Line="74" Column="44" />
       <File FileName="Assets/Scripts/GameObjectBehaviours/SceneObjectManipulator.cs" Line="67" Column="10" />
       <File FileName="Assets/Scripts/GameMechanics/SceneDescription.cs" Line="80" Column="28" />
       <File FileName="Assets/Scripts/GameObjectBehaviours/Sentence.cs" Line="23" Column="6" />
       <File FileName="Assets/Scripts/GameObjectBehaviours/Stanza.cs" Line="4" Column="1" />
-      <File FileName="Assets/Scripts/GameMechanics/StoryAudioManager.cs" Line="99" Column="40" />
+      <File FileName="Assets/Scripts/GameMechanics/StoryAudioManager.cs" Line="100" Column="26" />
       <File FileName="Assets/Scripts/Util/Constants.cs" Line="3" Column="25" NotebookId="1" />
-      <File FileName="Assets/Scripts/GameMechanics/StoryManager.cs" Line="216" Column="42" NotebookId="1" />
+      <File FileName="Assets/Scripts/GameMechanics/StoryManager.cs" Line="192" Column="57" NotebookId="1" />
       <File FileName="Assets/Scripts/Util/Util.cs" Line="12" Column="1" NotebookId="1" />
-      <File FileName="Assets/SceneDescriptions/the_hungry_toad/the_hungry_toad_14.json" Line="1" Column="1" NotebookId="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

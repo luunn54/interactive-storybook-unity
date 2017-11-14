@@ -210,6 +210,7 @@ public class StoryManager : MonoBehaviour {
                 newText.GetComponent<RectTransform>()
             );
         preferredWidth = Math.Max(preferredWidth, this.MIN_TINKER_TEXT_WIDTH);
+        Logger.Log("preferred_width: " + preferredWidth.ToString());
         if (preferredWidth > this.remainingStanzaWidth){
             // Add a new stanza.
             GameObject newStanza =

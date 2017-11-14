@@ -72,7 +72,16 @@ public class TinkerText : MonoBehaviour
         // Update size of Button.
         this.textButton.GetComponent<RectTransform>().sizeDelta =
             new Vector2(newWidth, BUTTON_TEXT_HEIGHT);
+        this.text.GetComponent<RectTransform>().sizeDelta =
+            new Vector2(newWidth, BUTTON_TEXT_HEIGHT);
         this.textWidth = newWidth;
+    }
+
+    // Set whether or not the TinkerText is clickable.
+    // (E.g. turn off clicking when auto reading is happening, then turn back
+    // on when in explore mode on the page.
+    public void SetClickable(bool clickable) {
+        this.textButton.GetComponent<Button>().interactable = clickable;
     }
 
     // Add a new action to the UnityAction click handler.
