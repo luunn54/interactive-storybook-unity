@@ -98,11 +98,17 @@ public class StoryManager : MonoBehaviour {
             // Load all words as TinkerText. Start at beginning of a stanza.
             this.remainingStanzaWidth = 0;
 
-            string[] textWords = description.text.Split(' ');
-            Logger.Log(textWords[0]);
-            Logger.Log(description.timestamps.Length);
-            Debug.Assert(textWords.Length == description.timestamps.Length);
-            for (int i = 0; i < textWords.Length; i++)
+            List<string> textWords =
+                new List<string>(description.text.Split(' '));
+            textWords.RemoveAll(String.IsNullOrEmpty);
+            if (textWords.Count != description.timestamps.Length) {
+                Logger.LogError("textWords doesn't match timestamps length " +
+                                textWords.Count.ToString() + " " + 
+                               description.timestamps.Length.ToString());
+                //Logger.Log("last word: " + textWords[24]);
+                //Logger.Log(textWords);
+            }
+            for (int i = 0; i < textWords.Count; i++)
             {
                 // This will create the TinkerText and update stanzas.
                 this.loadTinkerText(textWords[i], description.timestamps[i]);
@@ -162,20 +168,23 @@ public class StoryManager : MonoBehaviour {
         GameObject newObj = new GameObject();
         newObj.AddComponent<Image>();
         newObj.AddComponent<AspectRatioFitter>();
-        newObj.transform.SetParent(this.graphicsPanel.transform, false);
-        newObj.transform.localPosition = Vector3.zero;
         newObj.GetComponent<AspectRatioFitter>().aspectMode =
-                  AspectRatioFitter.AspectMode.FitInParent;
-        newObj.GetComponent<AspectRatioFitter>().aspectRatio =
-                  this.graphicsPanelAspectRatio;
+          AspectRatioFitter.AspectMode.FitInParent;
         string fullImagePath = "StoryPages/" + storyName + "/" + imageFile;
         Sprite sprite = Resources.Load<Sprite>(fullImagePath);
         newObj.GetComponent<Image>().sprite = sprite;
         newObj.GetComponent<Image>().preserveAspect = true;
+        newObj.transform.SetParent(this.graphicsPanel.transform, false);
+        newObj.transform.localPosition = Vector3.zero;
         // Figure out sizing so that later scene objects can be loaded relative
         // to the background image for accurate overlay.
         Texture texture = Resources.Load<Texture>(fullImagePath);
         float imageAspectRatio = (float)texture.width / (float)texture.height;
+        newObj.GetComponent<AspectRatioFitter>().aspectRatio =
+          imageAspectRatio;
+        // TODO: If height is constraining factor, then use up all possible
+        // width by pushing the image over, only in landscape mode though.
+        // Do the symmetric thing in portrait mode if width is constraining.
         if (imageAspectRatio > this.graphicsPanelAspectRatio) {
             // Width is the constraining factor.
             this.storyImageWidth = this.graphicsPanelWidth;
@@ -187,10 +196,22 @@ public class StoryManager : MonoBehaviour {
             // Height is the constraining factor.
             this.storyImageHeight = this.graphicsPanelHeight;
             this.storyImageWidth = this.graphicsPanelHeight * imageAspectRatio;
+            if (this.displayMode == DisplayMode.Landscape) {
+                float widthDiff = this.graphicsPanelWidth - this.storyImageWidth;
+                this.graphicsPanelWidth = this.storyImageWidth;
+                this.graphicsPanel.GetComponent<RectTransform>().sizeDelta =
+                    new Vector2(this.storyImageWidth, this.storyImageHeight);
+                Vector2 currentTextPanelSize =
+                    this.textPanel.GetComponent<RectTransform>().sizeDelta;
+                this.textPanel.GetComponent<RectTransform>().sizeDelta =
+                    new Vector2(currentTextPanelSize.x + widthDiff,
+                                currentTextPanelSize.y);   
+            }
             this.storyImageY = 0;
             this.storyImageX = 
                 (this.graphicsPanelWidth - this.storyImageWidth) / 2;
         }
+
         this.imageScaleFactor = this.storyImageWidth / texture.width;
         this.storyImage = newObj;
     }
@@ -212,12 +233,10 @@ public class StoryManager : MonoBehaviour {
                 newText.GetComponent<RectTransform>()
             );
         preferredWidth = Math.Max(preferredWidth, this.MIN_TINKER_TEXT_WIDTH);
-        Logger.Log("preferred_width: " + preferredWidth.ToString());
-        // TODO: also add a new stanza if we come across a good paragraph break,
-        // such as a comma, period, question mark or an exclamation mark.
+        // Add new stanza if no more room, or if previous word was terminating
+        // punctuation.
         if (preferredWidth > this.remainingStanzaWidth ||
             this.prevWordEndsStanza) {
-            // Add a new stanza.
             GameObject newStanza =
                 Instantiate((GameObject)Resources.Load("Prefabs/StanzaPanel"));
             newStanza.transform.SetParent(this.textPanel.transform, false);

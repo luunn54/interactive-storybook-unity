@@ -33,10 +33,10 @@ public class TinkerText : MonoBehaviour
     // These numbers should match the prefab, putting them here is just for
     // convenience when setting sizeDelta.
     // Height of entire TinkerText, including graphic.
-    public static float TINKER_TEXT_HEIGHT = 250;
-    public static float MIN_WIDTH = 150; // Based on size of GIFs.
+    public static float TINKER_TEXT_HEIGHT = 165;
+    public static float MIN_WIDTH = 120; // Based on size of GIFs.
     // Height of the button and text components.
-    public static float BUTTON_TEXT_HEIGHT = 100;
+    public static float BUTTON_TEXT_HEIGHT = 85;
 
     // Set up click handler.
     // TODO: Consider using MouseDown and MouseUp instead of Click?
