@@ -41,6 +41,12 @@ public class StoryManager : MonoBehaviour {
     // Variables for loading TinkerTexts.
     private float STANZA_SPACING = 20; // Matches Prefab.
     private float MIN_TINKER_TEXT_WIDTH = TinkerText.MIN_WIDTH;
+    private float MAX_LANDSCAPE_GRAPHICS_WIDTH = 1400;
+    private float LANDSCAPE_GRAPHICS_HEIGHT = 1270;
+    private float MAX_PORTRAIT_GRAPHICS_HEIGHT = 1450;
+    private float PORTRAIT_GRAPHICS_WIDTH = 1500;
+    private float LANDSCAPE_TEXT_WIDTH = 1050;
+    private float PORTRAIT_TEXT_HEIGHT = 750;
     private float remainingStanzaWidth = 0; // For loading TinkerTexts.
     private bool prevWordEndsStanza = false; // Know when to start new stanza.
 
@@ -70,7 +76,6 @@ public class StoryManager : MonoBehaviour {
     void Start() {
         Logger.Log("StoryManager start");
 
-        this.setDisplayMode(DisplayMode.Landscape);
         this.tinkerTexts = new List<GameObject>();
         this.stanzas = new List<GameObject>();
         this.sceneObjects = new Dictionary<string, GameObject>();
@@ -83,7 +88,7 @@ public class StoryManager : MonoBehaviour {
     // callbacks involve functions from SceneManipulatorAPI.
     public void LoadPage(SceneDescription description) {
         this.setDisplayMode(description.displayMode);
-
+        this.resetPanelSizes();    
         // Load audio.
         this.audioManager.LoadAudio(description.audioFile);
 
@@ -365,7 +370,7 @@ public class StoryManager : MonoBehaviour {
 
     // Update the display mode. We need to update our internal references to
     // textPanel and graphicsPanel.
-    public void setDisplayMode(DisplayMode newMode) {
+    private void setDisplayMode(DisplayMode newMode) {
         if (this.displayMode != newMode) {
             this.displayMode = newMode;
             if (this.graphicsPanel != null) {
@@ -389,6 +394,10 @@ public class StoryManager : MonoBehaviour {
                     this.graphicsPanel = this.portraitGraphicsPanel;
                     this.textPanel = this.portraitTextPanel;
                     this.titlePanel = this.portraitTitlePanel;
+                    // Resize back to normal.
+                    this.graphicsPanel.GetComponent<RectTransform>().sizeDelta =
+                            new Vector2(this.PORTRAIT_GRAPHICS_WIDTH,
+                                        this.MAX_PORTRAIT_GRAPHICS_HEIGHT);
                     break;
                 default:
                     Logger.LogError("unknown display mode " + newMode);
@@ -405,6 +414,32 @@ public class StoryManager : MonoBehaviour {
                 this.graphicsPanelWidth / this.graphicsPanelHeight;
             rect = this.titlePanel.GetComponent<RectTransform>().sizeDelta;
             this.titlePanelAspectRatio = (float)rect.x / (float)rect.y;
+        }
+
+    }
+
+    private void resetPanelSizes() {
+        switch(this.displayMode) {
+            case DisplayMode.Landscape:
+                this.graphicsPanel.GetComponent<RectTransform>().sizeDelta =
+                    new Vector2(this.MAX_LANDSCAPE_GRAPHICS_WIDTH,
+                                this.LANDSCAPE_GRAPHICS_HEIGHT);
+                this.textPanel.GetComponent<RectTransform>().sizeDelta =
+                        new Vector2(LANDSCAPE_TEXT_WIDTH,
+                                    this.textPanel.GetComponent<RectTransform>().sizeDelta.y);
+                break;
+            case DisplayMode.Portrait:
+                this.graphicsPanel.GetComponent<RectTransform>().sizeDelta =
+                    new Vector2(this.PORTRAIT_GRAPHICS_WIDTH,
+                                this.MAX_PORTRAIT_GRAPHICS_HEIGHT);
+                this.textPanel.GetComponent<RectTransform>().sizeDelta =
+                        new Vector2(this.textPanel.GetComponent<RectTransform>().sizeDelta.x,
+                                    this.PORTRAIT_TEXT_HEIGHT);
+                break;
+            case DisplayMode.LandscapeWide:
+                break;
+            default:
+                break;
         }
     }
 
