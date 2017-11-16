@@ -38,7 +38,7 @@ public class GameController : MonoBehaviour {
     private Button backButton;
     private Button finishButton;
 
-    public Button startReadButton;
+    public Button startStoryButton;
 
     public GameObject landscapePanel;
     public GameObject portraitPanel;
@@ -47,8 +47,6 @@ public class GameController : MonoBehaviour {
     public GameObject splashPanel;
     public Dropdown storyDropdown;
 
-    // Objects for Menu.
-
     // Objects for ROS connection.
     public GameObject rosPanel;
     public Button connectButton;
@@ -56,6 +54,9 @@ public class GameController : MonoBehaviour {
 
     // Reference to SceneManager so we can load and manipulate story scenes.
     private StoryManager storyManager;
+
+    // List of stories to populate dropdown.
+    private List<string> stories;
 
     // Stores the scene descriptions for the current story.
     private string storyName;
@@ -100,12 +101,19 @@ public class GameController : MonoBehaviour {
         this.portraitFinishButton.interactable = true;
         this.portraitFinishButton.onClick.AddListener(onFinishButtonClick);
 
+        this.startStoryButton.onClick.AddListener(onStartStoryClicked);
+
         this.toggleAudioButton.onClick.AddListener(toggleAudio);
 
         this.storyPages = new List<SceneDescription>();
         this.orientations = new Dictionary<string, ScreenOrientation>();
 
         this.storyManager = GetComponent<StoryManager>();
+
+        this.stories = new List<string>();
+        // TODO: read this from a file.
+        this.stories.Add("the_hungry_toad");
+        this.stories.Add("possum_and_the_peeper");
 
         // TODO: Check if we are using ROS or not.
         // Either launch the splash screen to connect to ROS, or go straight
@@ -117,8 +125,10 @@ public class GameController : MonoBehaviour {
         this.orientations["possum_and_the_peeper"] = ScreenOrientation.Landscape;
 
         this.storyManager.SetAutoplay(true);
-        this.selectStory("the_hungry_toad");
 
+        // Set up the dropdown, load splash screen.
+        this.setupStoryDropdown();
+        this.showSplashScreen(true);
     }
 
     // Update() is called once per frame.
@@ -135,7 +145,7 @@ public class GameController : MonoBehaviour {
         }
     }
 
-    private void selectStory(string story) {
+    private void startStory(string story) {
         this.storyName = story;
         DirectoryInfo dir = new DirectoryInfo(Application.dataPath +
                                               "/SceneDescriptions/" + story);
@@ -224,7 +234,8 @@ public class GameController : MonoBehaviour {
 	}
 
     private void onFinishButtonClick() {
-        
+        // For now, just return to the splash screen.
+        this.showSplashScreen(true);
     }
 
     private void onBackButtonClick() {
@@ -238,21 +249,16 @@ public class GameController : MonoBehaviour {
         }
     }
 
-    private void onStartReadClicked() {
-        // Tell story manager to begin playing the audio on this page,
-        // and story manager is responsible for telling the tinker texts
-        // to light up at the correct time.
-    }
-
-    private void onStopReadClicked() {
-        // Can be caused by a ROS message if the robot wants to do something,
-        // or can be because the child clicked something that we have set up
-        // to stop the reading.
+    private void onStartStoryClicked() {
+        // Read the selected value of the story dropdown and start that story.
+        int selectedIdx = this.storyDropdown.value;
+        this.showSplashScreen(false);
+        this.startStory(this.stories[selectedIdx]);
     }
 
     // All ROS message handlers.
     // They should add tasks to the task queue.
-    // Don't worry about this yet.
+    // Don't worry about this yet. Use ROS Manager class to handle this.
 
     private void onStopReadingReceived() {
         // Robot wants to intervene, so we should stop the automatic reading.    
@@ -260,6 +266,31 @@ public class GameController : MonoBehaviour {
 
     private void toggleAudio() {
         this.storyManager.ToggleAudio();
+    }
+
+    // Show human readable story names and pull title images when possible.
+    private void setupStoryDropdown() {
+        this.storyDropdown.ClearOptions();
+        List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
+        foreach (string story in this.stories) {
+            // Get human readable text and load the image.
+            Dropdown.OptionData newOption = new Dropdown.OptionData();
+            newOption.text = Util.HumanReadableStoryName(story);
+            newOption.image = Util.GetTitleSprite(story);
+            options.Add(newOption);
+        }
+
+        this.storyDropdown.AddOptions(options);
+    }
+
+    private void showSplashScreen(bool show) {
+        if (show) {
+            this.splashPanel.SetActive(true);
+            this.landscapePanel.SetActive(false);
+            this.portraitPanel.SetActive(false);
+        } else {
+            this.splashPanel.SetActive(false);
+        }
     }
 
 }

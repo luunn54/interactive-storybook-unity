@@ -149,7 +149,6 @@ public class StoryManager : MonoBehaviour {
         // for fitting the space and making the aspect ratio correct.
         // Basically the same as first half of loadImage() function.
         string imageFile = description.storyImageFile;
-        string storyName = Util.GetStoryName(imageFile);
         GameObject newObj = new GameObject();
         newObj.AddComponent<Image>();
         newObj.AddComponent<AspectRatioFitter>();
@@ -159,8 +158,7 @@ public class StoryManager : MonoBehaviour {
                   AspectRatioFitter.AspectMode.FitInParent;
         newObj.GetComponent<AspectRatioFitter>().aspectRatio =
                   this.titlePanelAspectRatio;
-        string fullImagePath = "StoryPages/" + storyName + "/" + imageFile;
-        Sprite sprite = Resources.Load<Sprite>(fullImagePath);
+        Sprite sprite = Util.GetStorySprite(imageFile);
         newObj.GetComponent<Image>().sprite = sprite;
         newObj.GetComponent<Image>().preserveAspect = true;
         this.storyImage = newObj;
@@ -169,7 +167,7 @@ public class StoryManager : MonoBehaviour {
     // Argument imageFile should be something like "the_hungry_toad_01" and then
     // this function will find it in the Resources directory and load it.
     private void loadImage(string imageFile) {
-        string storyName = Util.GetStoryName(imageFile);
+        string storyName = Util.FileNameToStoryName(imageFile);
         GameObject newObj = new GameObject();
         newObj.AddComponent<Image>();
         newObj.AddComponent<AspectRatioFitter>();

@@ -56,7 +56,7 @@ public class StoryAudioManager : MonoBehaviour {
 
     // Load an audio file.
     public void LoadAudio(string audioFile) {
-        string storyName = Util.GetStoryName(audioFile);
+        string storyName = Util.FileNameToStoryName(audioFile);
         this.audioClip = Resources.Load("StoryAudio/" + storyName + "/" +
                                         audioFile) as AudioClip;
         this.audioSource.clip = this.audioClip;
