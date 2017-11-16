@@ -43,8 +43,14 @@ public class GameController : MonoBehaviour {
     public GameObject landscapePanel;
     public GameObject portraitPanel;
 
+    // Objects for Splash Screen, Story Selection and Mode Selection.
+    public GameObject splashPanel;
+    public Dropdown storyDropdown;
+
+    // Objects for Menu.
+
     // Objects for ROS connection.
-    public GameObject splashScreen;
+    public GameObject rosPanel;
     public Button connectButton;
     private RosManager ros;
 
