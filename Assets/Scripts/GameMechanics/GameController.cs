@@ -122,7 +122,8 @@ public class GameController : MonoBehaviour {
         // Set up the orientations.
         // TODO: read in a file here instead.
         this.orientations["the_hungry_toad"] = ScreenOrientation.Landscape;
-        this.orientations["possum_and_the_peeper"] = ScreenOrientation.Landscape;
+        this.orientations["possum_and_the_peeper"] =
+                ScreenOrientation.Landscape;
 
         this.storyManager.SetAutoplay(true);
 

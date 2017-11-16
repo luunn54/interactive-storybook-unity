@@ -49,6 +49,6 @@ public static class Util {
 
     // Get the title page sprite for a story name.
     public static Sprite GetTitleSprite(string story) {
-        return Util.GetStorySprite(story + "_title");
+        return Util.GetStorySprite(story + "_01");
     }
 }

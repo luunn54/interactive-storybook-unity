@@ -31,6 +31,7 @@ public struct SceneObject {
     // Can be empty. This means there's no sprite to load.
     public string asset;
     public Position position;
+    public bool inText; // If this object corresponds to a word in the text.
 }
 
 [Serializable]

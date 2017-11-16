@@ -299,6 +299,14 @@ public class StoryManager : MonoBehaviour {
             Logger.Log("SceneObject clicked " +
                        manip.label);
         });
+        // TODO: if sceneObject.inText is false, set up whatever behavior we
+        // want for these words.
+        if (!sceneObject.inText) {
+            manip.AddClickHandler(() =>
+            {
+                Logger.Log("Not in text! " + manip.label);
+            });
+        }
         newObj.name = sceneObject.label;
         this.sceneObjects[sceneObject.label] = newObj;
     }
