@@ -21,6 +21,8 @@ public class TinkerText : MonoBehaviour
     private float textWidth;
     public float audioStartTime, audioEndTime;
 
+    public bool isFirstInStanza;
+
     // Have a reference tot he children objects in this TinkerText.
     public GameObject textButton;
     public GameObject text;
@@ -65,6 +67,10 @@ public class TinkerText : MonoBehaviour
         gameObject.SetActive(true);
     }
 
+    public void SetFirstInStanza() {
+        this.isFirstInStanza = true;
+    }
+
     public void SetWidth(float newWidth) {
         // Update size of TinkerText.
         GetComponent<RectTransform>().sizeDelta =
@@ -90,13 +96,11 @@ public class TinkerText : MonoBehaviour
     }
 
     public void OnStartAudioTrigger() {
-        Logger.Log(id.ToString() + " start" + this.ToString());
         // Change the text color.
         this.text.GetComponent<Text>().color = Color.magenta;
     }
 
     public void OnEndAudioTrigger() {
-        Logger.Log(id.ToString() + " end");
         this.text.GetComponent<Text>().color = Color.black;
     }
 }

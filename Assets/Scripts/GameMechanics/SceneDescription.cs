@@ -27,6 +27,7 @@ public struct Position {
 // objects in this scene.
 [Serializable]
 public struct SceneObject {
+    public int id;
     public string label;
     // Can be empty. This means there's no sprite to load.
     public string asset;
@@ -48,7 +49,7 @@ public enum TriggerType {
 [Serializable]
 public struct TriggerArgs {
     public int textId;
-    public string sceneObjectLabel;
+    public int sceneObjectId;
     public float timestamp;
 }
 

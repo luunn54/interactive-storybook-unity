@@ -57,8 +57,8 @@ public class StoryManager : MonoBehaviour {
     private List<GameObject> stanzas;
     // Dynamically created TinkerTexts specific to this scene.
     private List<GameObject> tinkerTexts;
-    // Dynamically created SceneObjects, keyed by their human-given name.
-    private Dictionary<string, GameObject> sceneObjects;
+    // Dynamically created SceneObjects, keyed by their id.
+    private Dictionary<int, GameObject> sceneObjects;
     // The image we loaded for this scene.
     private GameObject storyImage;
     // Need to know the actual dimensions of the background image, so that we
@@ -78,7 +78,12 @@ public class StoryManager : MonoBehaviour {
 
         this.tinkerTexts = new List<GameObject>();
         this.stanzas = new List<GameObject>();
-        this.sceneObjects = new Dictionary<string, GameObject>();
+        this.sceneObjects = new Dictionary<int, GameObject>();
+    }
+
+    void Update() {
+        // Update whether or not we are accepting user interaction.
+        Stanza.allowSwipe = !this.audioManager.IsPlaying();
     }
 
     // Main function to be called by GameController.
@@ -110,14 +115,15 @@ public class StoryManager : MonoBehaviour {
                 Logger.LogError("textWords doesn't match timestamps length " +
                                 textWords.Count.ToString() + " " + 
                                description.timestamps.Length.ToString());
-                //Logger.Log("last word: " + textWords[24]);
-                //Logger.Log(textWords);
             }
             for (int i = 0; i < textWords.Count; i++)
             {
                 // This will create the TinkerText and update stanzas.
                 this.loadTinkerText(textWords[i], description.timestamps[i]);
             }
+            // Set end timestamp of last stanza (edge case).
+            this.stanzas[this.stanzas.Count - 1].GetComponent<Stanza>().SetEndTimestamp(
+                this.tinkerTexts[this.tinkerTexts.Count - 1].GetComponent<TinkerText>().audioEndTime);
             // Load audio triggers for TinkerText.
             this.loadAudioTriggers();
         }
@@ -131,7 +137,6 @@ public class StoryManager : MonoBehaviour {
         foreach (Trigger trigger in description.triggers) {
             this.loadTrigger(trigger);
         }
-
 
         if (this.autoplayAudio) {
             this.audioManager.PlayAudio();
@@ -240,10 +245,15 @@ public class StoryManager : MonoBehaviour {
         // punctuation.
         if (preferredWidth > this.remainingStanzaWidth ||
             this.prevWordEndsStanza) {
+            // Tell this tinkerText it's first in the stanza.
+            newTinkerText.GetComponent<TinkerText>().SetFirstInStanza();
             GameObject newStanza =
                 Instantiate((GameObject)Resources.Load("Prefabs/StanzaPanel"));
             newStanza.transform.SetParent(this.textPanel.transform, false);
-            newStanza.GetComponent<Stanza>().Init(this.audioManager);
+            newStanza.GetComponent<Stanza>().Init(
+                this.audioManager,
+                this.textPanel.GetComponent<RectTransform>().position
+            );
             // Set the end time of previous stanza and start time of the new
             // stanza we're adding.
             if (this.currentStanza != null) {
@@ -262,7 +272,6 @@ public class StoryManager : MonoBehaviour {
         // Set new TinkerText parent to be the stanza.
         newTinkerText.GetComponent<TinkerText>().SetWidth(preferredWidth);
 		newTinkerText.transform.SetParent(this.currentStanza.transform, false);
-
         this.remainingStanzaWidth -= preferredWidth;
         this.remainingStanzaWidth -= STANZA_SPACING;
         this.tinkerTexts.Add(newTinkerText);
@@ -272,7 +281,8 @@ public class StoryManager : MonoBehaviour {
     // Adds a SceneObject to the story scene.
     private void loadSceneObject(SceneObject sceneObject) {
         // TODO: handle multiple objects per label. For now, only allow one.
-        if (this.sceneObjects.ContainsKey(sceneObject.label)) {
+        // Idea: allow multiple as long as the boxes don't overlap.
+        if (this.sceneObjects.ContainsKey(sceneObject.id)) {
             return;
         }
         GameObject newObj = 
@@ -283,6 +293,7 @@ public class StoryManager : MonoBehaviour {
         SceneObjectManipulator manip =
             newObj.GetComponent<SceneObjectManipulator>();
         Position pos = sceneObject.position;
+        manip.id = sceneObject.id;
         manip.label = sceneObject.label;
         Logger.Log("x, y " + storyImageX.ToString() + " " + storyImageY.ToString());
         manip.MoveToPosition(
@@ -307,8 +318,9 @@ public class StoryManager : MonoBehaviour {
                 Logger.Log("Not in text! " + manip.label);
             });
         }
+        // Name the GameObject so we can inspect in the editor.
         newObj.name = sceneObject.label;
-        this.sceneObjects[sceneObject.label] = newObj;
+        this.sceneObjects[sceneObject.id] = newObj;
     }
 
     // Sets up a trigger between TinkerTexts and SceneObjects.
@@ -316,7 +328,7 @@ public class StoryManager : MonoBehaviour {
         switch (trigger.type) {
             case TriggerType.CLICK_TINKERTEXT_SCENE_OBJECT:
                 SceneObjectManipulator manip = 
-                    this.sceneObjects[trigger.args.sceneObjectLabel]
+                    this.sceneObjects[trigger.args.sceneObjectId]
                     .GetComponent<SceneObjectManipulator>();
                 TinkerText tinkerText = this.tinkerTexts[trigger.args.textId]
                                             .GetComponent<TinkerText>();
@@ -336,13 +348,14 @@ public class StoryManager : MonoBehaviour {
         foreach (GameObject t in this.tinkerTexts) {
             TinkerText tinkerText = t.GetComponent<TinkerText>();
             this.audioManager.AddTrigger(tinkerText.audioStartTime,
-                                         tinkerText.OnStartAudioTrigger);
-            this.audioManager.AddTrigger(tinkerText.audioEndTime,
-                             tinkerText.OnEndAudioTrigger);
+                                         tinkerText.OnStartAudioTrigger,
+                                         tinkerText.isFirstInStanza);
+            this.audioManager.AddTrigger(
+                tinkerText.audioEndTime, tinkerText.OnEndAudioTrigger); 
         }
     }
 
-    // Called by GameController to change whether we autoplay or not.
+    // Called by GameController to change whether we autoplay o not.
     public void SetAutoplay(bool newValue) {
         this.autoplayAudio = newValue;
     } 
@@ -361,7 +374,7 @@ public class StoryManager : MonoBehaviour {
         }
         this.tinkerTexts.Clear();
         // Destroy SceneObjects we have a reference to, and empty dictionary.
-        foreach (KeyValuePair<string,GameObject> obj in this.sceneObjects) {
+        foreach (KeyValuePair<int,GameObject> obj in this.sceneObjects) {
             Destroy(obj.Value);
         }
         this.sceneObjects.Clear();

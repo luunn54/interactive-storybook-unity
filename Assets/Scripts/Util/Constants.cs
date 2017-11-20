@@ -2,6 +2,10 @@
 
 public static class Constants
 {
+    // General dimensions.
+    public static float SCREEN_WIDTH = 2560;
+    public static float SCREEN_HEIGHT = 1600;
+
     // ROS connection.
     public static bool USE_ROS = true;
     public static string DEFAULT_ROSBRIDGE_IP = "192.168.1.149";

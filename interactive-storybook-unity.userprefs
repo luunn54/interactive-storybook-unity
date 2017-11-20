@@ -1,18 +1,35 @@
 ﻿<Properties StartupConfiguration="{BE773929-B95A-B392-E269-3DE0AFC1ECA5}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Util/Util.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/GameMechanics/StoryManager.cs">
     <Files>
-      <File FileName="Assets/Scripts/GameMechanics/GameController.cs" Line="256" Column="6" />
-      <File FileName="Assets/Scripts/GameObjectBehaviours/TinkerText.cs" Line="61" Column="22" />
-      <File FileName="Assets/Scripts/GameObjectBehaviours/SceneObjectManipulator.cs" Line="67" Column="10" />
-      <File FileName="Assets/Scripts/GameMechanics/SceneDescription.cs" Line="97" Column="45" />
+      <File FileName="Assets/Scripts/GameMechanics/GameController.cs" Line="103" Column="1" />
+      <File FileName="Assets/Scripts/GameObjectBehaviours/TinkerText.cs" Line="104" Column="1" />
+      <File FileName="Assets/Scripts/GameObjectBehaviours/SceneObjectManipulator.cs" Line="33" Column="5" />
+      <File FileName="Assets/Scripts/GameMechanics/SceneDescription.cs" Line="39" Column="31" />
       <File FileName="Assets/Scripts/GameObjectBehaviours/Sentence.cs" Line="25" Column="2" />
-      <File FileName="Assets/Scripts/GameObjectBehaviours/Stanza.cs" Line="29" Column="1" />
-      <File FileName="Assets/Scripts/GameMechanics/StoryAudioManager.cs" Line="89" Column="30" />
-      <File FileName="Assets/Scripts/Util/Constants.cs" Line="3" Column="25" NotebookId="1" />
-      <File FileName="Assets/Scripts/GameMechanics/StoryManager.cs" Line="162" Column="1" NotebookId="1" />
-      <File FileName="Assets/Scripts/Util/Util.cs" Line="24" Column="6" NotebookId="1" />
-      <File FileName="Assets/SceneDescriptions/the_hungry_toad/the_hungry_toad_01.json" Line="1" Column="1" NotebookId="1" />
+      <File FileName="Assets/Scripts/GameObjectBehaviours/Stanza.cs" Line="74" Column="37" />
+      <File FileName="Assets/Scripts/GameMechanics/StoryAudioManager.cs" Line="94" Column="30" />
+      <File FileName="Assets/Scripts/Util/Constants.cs" Line="8" Column="5" NotebookId="1" />
+      <File FileName="Assets/Scripts/GameMechanics/StoryManager.cs" Line="326" Column="5" NotebookId="1" />
+      <File FileName="Assets/Scripts/Util/Util.cs" Line="32" Column="6" NotebookId="1" />
+      <File FileName="Assets/SceneDescriptions/the_hungry_toad/the_hungry_toad_02.json" Line="1" Column="1" NotebookId="1" />
     </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="interactive-storybook-unity" expanded="True">
+            <Node name="Assets" expanded="True">
+              <Node name="Scripts" expanded="True">
+                <Node name="GameMechanics" expanded="True">
+                  <Node name="StoryManager.cs" selected="True" />
+                </Node>
+                <Node name="GameObjectBehaviours" expanded="True" />
+                <Node name="Util" expanded="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

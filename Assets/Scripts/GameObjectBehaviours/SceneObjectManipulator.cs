@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using System;
-using System.Collections.Generic;
+using System.Collections;
 
 // ObjectManipulator is a script that should be added to all game objects that
 // are created dynamically by the StoryManager and that will be manipulated
@@ -19,6 +19,7 @@ public class SceneObjectManipulator : MonoBehaviour
     public Button button;
     public Image image;
     public RectTransform rectTransform;
+    public int id { get; set; }
     public string label { get; set; }
 
     // TODO: add the concept of variables, so that variables can be
@@ -35,22 +36,36 @@ public class SceneObjectManipulator : MonoBehaviour
         // TODO: add audio and animation to the prefab, then include them.
 
         // It's important to do += here and not = for clickUnityAction.
-        this.clickUnityAction += () => { };
+        //this.clickUnityAction += () => { };
         this.button.onClick.AddListener(this.clickUnityAction);
+        this.button.onClick.AddListener(Testing);
+    }
+
+    public void Testing() {
+        Logger.Log("in test function");
     }
 
     public void AddClickHandler(Action action) {
+        Logger.Log("adding click handler for " + this.label);
         this.clickUnityAction += new UnityAction(action);
     }
 
     public Action Highlight(Color color) {
         return () =>
         {
+            Color currentColor = gameObject.GetComponent<Image>().color;
+            Logger.Log("current color " + currentColor.ToString());
             gameObject.GetComponent<Image>().color = color;
             Logger.Log("Highlight: " + color.ToString());
             // After some amount of time, remove highlighting.
-
+            StartCoroutine(undoHighlight(2, currentColor));
         };
+    }
+
+    private IEnumerator undoHighlight(float secondsDelay, Color originalColor) {
+        yield return new WaitForSeconds(secondsDelay);
+        Logger.Log("originalColor " + originalColor.ToString());
+        gameObject.GetComponent<Image>().color = originalColor;
     }
 
     public Action MoveToPosition(Vector3 localPosition) {
